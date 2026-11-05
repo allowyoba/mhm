@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mhm:native-messaging:v1",
+  "title": "mhm Native Messaging protocol",
+  "oneOf": [
+    {"$ref": "#/$defs/request"},
+    {"$ref": "#/$defs/response"}
+  ],
+  "$defs": {
+    "request": {
+      "type": "object",
+      "required": ["protocolVersion", "requestId", "command"],
+      "properties": {
+        "protocolVersion": {"const": 1},
+        "requestId": {"type": "string", "minLength": 1, "maxLength": 128},
+        "command": {"type": "string", "minLength": 1, "maxLength": 64}
+      },
+      "additionalProperties": true
+    },
+    "response": {
+      "type": "object",
+      "required": ["protocolVersion", "hostVersion", "ok"],
+      "properties": {
+        "protocolVersion": {"const": 1},
+        "hostVersion": {"type": "string"},
+        "requestId": {
+          "description": "Echoed back only when the request included one; unversioned legacy requests omit it.",
+          "type": "string", "minLength": 1, "maxLength": 128
+        },
+        "ok": {"type": "boolean"},
+        "error": {"type": "string"},
+        "errorCode": {
+          "enum": [
+            "INVALID_REQUEST", "UNSUPPORTED_PROTOCOL", "UNKNOWN_COMMAND", "NOT_FOUND",
+            "INVALID_VALUE", "CONFLICT", "DEPENDENCY_UNAVAILABLE",
+            "TIMEOUT", "INTERNAL_ERROR", "TRAFFIC_LIMIT"
+          ]
+        },
+        "capabilities": {
+          "description": "Commands the host supports at this protocol version, returned by ping/bootstrap for feature detection.",
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

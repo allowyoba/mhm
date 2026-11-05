@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>mhm</title>
+    <link rel="stylesheet" href="tokens.css" />
+    <link rel="stylesheet" href="components.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="header">
+        <a class="brand" href="#" aria-label="mhm home"
+          ><img src="icons/logo.svg" width="36" height="36" alt="" /><span
+            >mhm</span
+          ></a
+        ><button
+          id="settingsButton"
+          class="icon-button"
+          data-i18n-title="settings"
+          aria-label="Settings"
+        >
+          ⚙
+        </button>
+      </header>
+      <div class="workspace">
+        <nav id="appNavigation" class="app-nav hidden" aria-label="Navigation">
+          <button type="button" data-route="homeView">
+            <span class="nav-symbol" aria-hidden="true">⌂</span
+            ><span data-i18n="navHome">Connection</span>
+          </button>
+          <button type="button" data-route="profilesView">
+            <span class="nav-symbol" aria-hidden="true">▱</span
+            ><span data-i18n="profiles">Profiles</span>
+          </button>
+          <button type="button" data-route="trafficView">
+            <span class="nav-symbol" aria-hidden="true">↗</span
+            ><span data-i18n="navTraffic">Traffic</span>
+          </button>
+          <button type="button" data-route="rulesView">
+            <span class="nav-symbol" aria-hidden="true">⇄</span
+            ><span data-i18n="navRules">Rules</span>
+          </button>
+        </nav>
+        <div class="workspace-content">
+          <div
+            id="notice"
+            class="notice hidden"
+            role="alert"
+            aria-live="polite"
+          ></div>
+          <section id="loadingView" class="view">
+            <div class="loading-mark"></div>
+            <p data-i18n="checking">Checking your setup…</p>
+          </section>
+          <section id="onboardingView" class="view hidden">
+            <p class="eyebrow" data-i18n="welcome">WELCOME TO MHM</p>
+            <h1 data-i18n="setupTitle">Your profiles. One connection.</h1>
+            <p class="muted" data-i18n="setupIntro">
+              Install the companion app once, then add your subscription.
+            </p>
+            <ol class="steps">
+              <li>
+                <strong data-i18n="stepInstall">Install the extension</strong
+                ><span class="muted" data-i18n="stepInstalled"
+                  >Done. You are here.</span
+                >
+              </li>
+              <li>
+                <strong data-i18n="stepCompanion"
+                  >Install the companion app</strong
+                >
+                <p class="muted" data-i18n="companionHint">
+                  Run the installer for your computer using the command below.
+                </p>
+                <label for="browserChoice" data-i18n="browser">Browser</label
+                ><select id="browserChoice">
+                  <option value="chrome">Chrome</option>
+                  <option value="firefox">Firefox</option>
+                  <option value="opera">Opera</option>
+                  <option value="edge">Edge</option>
+                </select>
+                <label for="platformChoice" data-i18n="computer"
+                  >Computer</label
+                >
+                <select id="platformChoice">
+                  <option value="macos-arm64">macOS · Apple silicon</option>
+                  <option value="macos-amd64">macOS · Intel</option>
+                  <option value="windows-amd64">Windows · x64</option>
+                  <option value="windows-arm64">Windows · ARM64</option>
+                  <option value="linux-amd64">Linux · deb / apt · x64</option>
+                  <option value="linux-arm64">Linux · deb / apt · ARM64</option>
+                </select>
+                <div class="command">
+                  <code id="installCommand"></code
+                  ><button id="copyCommand" class="secondary" data-i18n="copy">
+                    Copy
+                  </button>
+                </div>
+                <p class="muted small" data-i18n="macInstallHint">
+                  macOS: make the downloaded installer executable before running
+                  it. Windows: run the .exe from PowerShell.
+                </p>
+              </li>
+              <li>
+                <strong data-i18n="stepSubscription"
+                  >Add your subscription</strong
+                ><span class="muted" data-i18n="stepSubscriptionHint"
+                  >Paste a URL or import a YAML profile after setup.</span
+                >
+              </li>
+            </ol>
+            <button id="recheck" class="primary full" data-i18n="checkAgain">
+              Check again
+            </button>
+            <p id="setupDetail" class="muted small" role="status"></p>
+          </section>
+          <section id="homeView" class="view hidden">
+            <div class="connection-panel">
+              <div id="connectionState" class="connection-state">
+                <span class="status-dot"></span><span id="statusText"></span>
+              </div>
+              <h1 id="activeName" data-i18n="chooseProfile">
+                Choose a profile
+              </h1>
+              <p id="connectionHint" class="muted"></p>
+              <label class="sr-only" for="homeProfile" data-i18n="chooseProfile"
+                >Choose a profile</label
+              ><select id="homeProfile" class="home-profile"></select>
+              <button
+                id="connectButton"
+                class="primary full"
+                data-i18n="connect"
+              >
+                Connect
+              </button>
+              <button
+                id="disconnectLink"
+                class="text-button hidden"
+                data-i18n="disconnect"
+              >
+                Disconnect
+              </button>
+              <div id="liveTraffic" class="traffic hidden">
+                <span id="downloadSpeed">↓ 0 B/s</span
+                ><span id="uploadSpeed">↑ 0 B/s</span>
+              </div>
+            </div>
+            <div
+              id="homeBudget"
+              class="budget-banner hidden"
+              role="status"
+            ></div>
+            <div class="home-shortcuts">
+              <button
+                id="homeTraffic"
+                class="secondary"
+                data-i18n="viewTraffic"
+              >
+                Traffic & limits</button
+              ><button
+                id="homeProfiles"
+                class="secondary"
+                data-i18n="manageProfiles"
+              >
+                Manage profiles
+              </button>
+            </div>
+            <section id="groupsPanel" class="hidden">
+              <div class="section-heading">
+                <h2 data-i18n="routing">Routing</h2>
+                <button
+                  id="refreshGroups"
+                  class="text-button"
+                  data-i18n="refresh"
+                >
+                  Refresh
+                </button>
+              </div>
+              <label class="sr-only" for="mode" data-i18n="mode">Mode</label
+              ><select id="mode">
+                <option value="rule" data-i18n="ruleMode">
+                  Rules · recommended
+                </option>
+                <option value="global" data-i18n="globalMode">
+                  All through proxy
+                </option>
+                <option value="direct" data-i18n="directMode">
+                  Direct connection
+                </option>
+              </select>
+              <div id="groups" class="stack"></div>
+            </section>
+          </section>
+          <section id="profilesView" class="view hidden">
+            <p class="eyebrow" data-i18n="profilesEyebrow">YOUR CONNECTIONS</p>
+            <h1 data-i18n="profiles">Profiles</h1>
+            <p class="muted" data-i18n="profilesIntro">
+              Subscriptions and local configurations, securely stored on your
+              computer.
+            </p>
+            <label
+              class="sr-only"
+              for="profileSearch"
+              data-i18n="searchProfiles"
+              >Search profiles</label
+            ><input
+              id="profileSearch"
+              type="search"
+              data-i18n-placeholder="searchProfiles"
+              placeholder="Search profiles"
+            />
+            <p
+              id="profileSearchEmpty"
+              class="muted hidden"
+              data-i18n="noSearchResults"
+            >
+              No matching profiles.
+            </p>
+            <div class="section-heading">
+              <h2 data-i18n="profiles">Profiles</h2>
+              <button
+                id="addProfile"
+                class="text-button"
+                data-i18n="addProfile"
+              >
+                + Add
+              </button>
+            </div>
+            <div id="profileList" class="stack"></div>
+            <div id="emptyProfiles" class="empty hidden">
+              <img src="icons/logo.svg" width="48" height="48" alt="" />
+              <p data-i18n="emptyProfiles">
+                Add a subscription to get started.
+              </p>
+              <button
+                id="emptyAdd"
+                class="secondary"
+                data-i18n="addSubscription"
+              >
+                Add subscription
+              </button>
+            </div>
+          </section>
+          <section id="trafficView" class="view hidden">
+            <p class="eyebrow" data-i18n="trafficEyebrow">LOCAL STATISTICS</p>
+            <h1 data-i18n="navTraffic">Traffic</h1>
+            <p class="muted" data-i18n="trafficIntro">
+              Usage across your profiles, saved on this computer.
+            </p>
+            <div class="metric-grid">
+              <article class="metric-card">
+                <span data-i18n="today">Today</span
+                ><strong id="trafficToday">—</strong>
+              </article>
+              <article class="metric-card">
+                <span data-i18n="thisMonth">This month</span
+                ><strong id="trafficMonth">—</strong>
+              </article>
+              <article class="metric-card">
+                <span data-i18n="allTime">All time</span
+                ><strong id="trafficAll">—</strong>
+              </article>
+            </div>
+            <section class="surface chart-card">
+              <div class="section-heading">
+                <h2 data-i18n="last30Days">Last 30 days</h2>
+                <button
+                  id="refreshTraffic"
+                  class="text-button"
+                  data-i18n="refresh"
+                >
+                  Refresh
+                </button>
+              </div>
+              <svg
+                id="trafficChart"
+                viewBox="0 0 600 140"
+                role="img"
+                data-i18n-aria-label="trafficChartLabel"
+                aria-label="Daily traffic"
+              ></svg>
+              <p id="trafficChartSummary" class="muted small"></p>
+            </section>
+            <section class="surface">
+              <h2 data-i18n="trafficLimit">Traffic limit</h2>
+              <div id="trafficBudget" class="budget-summary"></div>
+              <progress
+                id="budgetProgress"
+                max="100"
+                value="0"
+                data-i18n-aria-label="trafficLimit"
+                aria-label="Traffic limit"
+              ></progress>
+              <form id="trafficPolicyForm">
+                <fieldset id="trafficPolicyFields">
+                  <label class="check-label"
+                    ><input id="limitEnabled" type="checkbox" /><span
+                      data-i18n="enableLimit"
+                      >Enable a traffic limit</span
+                    ></label
+                  >
+                  <div id="limitFields" class="hidden">
+                    <div class="form-grid">
+                      <div>
+                        <label for="limitGiB" data-i18n="limitAmount"
+                          >Limit (GiB)</label
+                        ><input
+                          id="limitGiB"
+                          type="number"
+                          min="0.001"
+                          max="102400"
+                          step="any"
+                          value="50"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label for="limitPeriod" data-i18n="limitPeriod"
+                          >Period</label
+                        ><select id="limitPeriod">
+                          <option value="month" data-i18n="monthly">
+                            Monthly
+                          </option>
+                          <option value="day" data-i18n="daily">Daily</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div id="cycleDayField">
+                      <label for="cycleDay" data-i18n="cycleDay"
+                        >Renew on day of month</label
+                      ><input
+                        id="cycleDay"
+                        type="number"
+                        min="1"
+                        max="31"
+                        value="1"
+                      />
+                    </div>
+                    <label for="limitAction" data-i18n="whenLimitReached"
+                      >When the limit is reached</label
+                    ><select id="limitAction">
+                      <option value="warn" data-i18n="limitWarn">
+                        Show a warning
+                      </option>
+                      <option value="block" data-i18n="limitBlock">
+                        Stop the proxy connection
+                      </option>
+                    </select>
+                    <p class="muted small" data-i18n="limitHint">
+                      Download and upload both count. Blocking works while this
+                      page is closed. Disconnect restores your normal
+                      connection.
+                    </p>
+                  </div>
+                  <button class="primary" type="submit" data-i18n="saveLimit">
+                    Save limit
+                  </button>
+                </fieldset>
+              </form>
+            </section>
+            <section class="surface">
+              <h2 data-i18n="recentSessions">Recent sessions</h2>
+              <div id="trafficSessions" class="stack"></div>
+              <p id="noSessions" class="muted" data-i18n="noTraffic">
+                Traffic will appear after your first connection.
+              </p>
+            </section>
+          </section>
+          <section id="rulesView" class="view hidden">
+            <p class="eyebrow" data-i18n="rulesEyebrow">YOUR ROUTING</p>
+            <h1 data-i18n="navRules">Rules</h1>
+            <p class="muted" data-i18n="rulesIntro">
+              Custom rules run before your subscription rules and survive
+              subscription updates.
+            </p>
+            <label for="rulesProfile" data-i18n="ruleProfile">Profile</label
+            ><select id="rulesProfile"></select>
+            <p
+              id="noRulesProfile"
+              class="muted hidden"
+              data-i18n="noRulesProfile"
+            >
+              Save or download a profile first.
+            </p>
+            <div id="rulesEditor">
+              <section class="surface">
+                <h2 data-i18n="addRule">Add a rule</h2>
+                <form id="ruleBuilder">
+                  <div class="form-grid">
+                    <div>
+                      <label for="ruleType" data-i18n="ruleType">Match</label
+                      ><select id="ruleType">
+                        <option value="DOMAIN-SUFFIX" data-i18n="ruleSuffix">
+                          Domain and subdomains
+                        </option>
+                        <option value="DOMAIN" data-i18n="ruleDomain">
+                          Exact domain
+                        </option>
+                        <option value="DOMAIN-KEYWORD" data-i18n="ruleKeyword">
+                          Domain contains
+                        </option>
+                        <option value="IP-CIDR" data-i18n="ruleIpv4">
+                          IPv4 network
+                        </option>
+                        <option value="IP-CIDR6" data-i18n="ruleIpv6">
+                          IPv6 network
+                        </option>
+                        <option value="MATCH" data-i18n="ruleAll">
+                          All traffic
+                        </option>
+                      </select>
+                    </div>
+                    <div>
+                      <label for="ruleTarget" data-i18n="ruleTarget"
+                        >Send to</label
+                      ><select id="ruleTarget"></select>
+                    </div>
+                  </div>
+                  <label for="ruleValue" data-i18n="ruleValue"
+                    >Domain or network</label
+                  ><input
+                    id="ruleValue"
+                    placeholder="example.org"
+                    spellcheck="false"
+                    required
+                  /><button class="secondary" type="submit" data-i18n="addRule">
+                    Add rule
+                  </button>
+                </form>
+              </section>
+              <section class="surface">
+                <div class="section-heading">
+                  <h2 data-i18n="customRules">Custom rules</h2>
+                  <span id="rulesDirty" class="small muted"></span>
+                </div>
+                <div id="ruleList" class="stack"></div>
+                <p id="rulesEmpty" class="muted" data-i18n="rulesEmpty">
+                  The profile currently uses its original rules.
+                </p>
+                <details>
+                  <summary data-i18n="rawRules">
+                    Edit mihomo rules as text
+                  </summary>
+                  <label class="sr-only" for="rawRules" data-i18n="rawRules"
+                    >mihomo rules</label
+                  ><textarea
+                    id="rawRules"
+                    rows="7"
+                    spellcheck="false"
+                    placeholder="DOMAIN-SUFFIX,example.org,DIRECT"
+                  ></textarea>
+                </details>
+                <div class="editor-actions">
+                  <button id="saveRules" class="primary" data-i18n="saveRules">
+                    Check and save</button
+                  ><button
+                    id="applyRules"
+                    class="secondary hidden"
+                    data-i18n="applyUpdate"
+                  >
+                    Apply update
+                  </button>
+                </div>
+                <p class="muted small" data-i18n="rulesApplyHint">
+                  Saved changes take effect on the next connection or when you
+                  press Apply.
+                </p>
+              </section>
+            </div>
+          </section>
+          <section id="editorView" class="view hidden">
+            <button id="editorBack" class="text-button back" data-i18n="back">
+              ← Back
+            </button>
+            <h1 id="editorTitle" data-i18n="addProfile">Add a profile</h1>
+            <form id="profileForm" autocomplete="off">
+              <fieldset id="editorFields">
+                <label for="profileName" data-i18n="profileName">Name</label
+                ><input
+                  id="profileName"
+                  maxlength="80"
+                  required
+                  placeholder="My subscription"
+                />
+                <label for="sourceType" data-i18n="source">Source</label
+                ><select id="sourceType">
+                  <option value="subscription" data-i18n="subscription">
+                    Subscription URL
+                  </option>
+                  <option value="local" data-i18n="localYaml">
+                    YAML file or text
+                  </option>
+                </select>
+                <div id="subscriptionFields">
+                  <label for="subscriptionUrl" data-i18n="subscriptionUrl"
+                    >Subscription URL</label
+                  ><input
+                    id="subscriptionUrl"
+                    type="password"
+                    spellcheck="false"
+                    autocomplete="new-password"
+                    placeholder="https://…"
+                  /><button
+                    id="showUrl"
+                    class="text-button small"
+                    type="button"
+                    data-i18n="showUrl"
+                  >
+                    Show URL
+                  </button>
+                  <label for="tlsMode" data-i18n="tlsMode"
+                    >HTTPS certificate</label
+                  >
+                  <select id="tlsMode">
+                    <option value="system" data-i18n="tlsSystem">
+                      System trusted certificates
+                    </option>
+                    <option value="custom" data-i18n="tlsCustom">
+                      Add a CA certificate
+                    </option>
+                    <option value="insecure" data-i18n="tlsInsecure">
+                      Ignore certificate errors
+                    </option>
+                  </select>
+                  <div id="certificateFields" class="hidden">
+                    <label
+                      class="file-button secondary"
+                      for="certificateFile"
+                      data-i18n="importCertificate"
+                      >Choose certificate</label
+                    >
+                    <input
+                      id="certificateFile"
+                      class="sr-only"
+                      type="file"
+                      accept=".crt,.cer,.pem,application/x-x509-ca-cert,application/pkix-cert"
+                    />
+                    <label for="caCertificate" data-i18n="certificatePem"
+                      >CA certificate (PEM)</label
+                    >
+                    <textarea
+                      id="caCertificate"
+                      rows="5"
+                      spellcheck="false"
+                      autocomplete="off"
+                    ></textarea>
+                    <p class="muted small" data-i18n="certificateScope">
+                      Trusted for this subscription only. Hostname verification
+                      stays enabled.
+                    </p>
+                  </div>
+                  <p
+                    id="insecureWarning"
+                    class="notice error hidden"
+                    role="status"
+                    data-i18n="tlsInsecureWarning"
+                  >
+                    Certificate and hostname verification are disabled for this
+                    subscription. An attacker could replace its content.
+                  </p>
+                  <label for="updateInterval" data-i18n="autoUpdate"
+                    >Update automatically</label
+                  ><select id="updateInterval">
+                    <option value="1440" data-i18n="daily">Every day</option>
+                    <option value="720" data-i18n="every12h">
+                      Every 12 hours
+                    </option>
+                    <option value="360" data-i18n="every6h">
+                      Every 6 hours
+                    </option>
+                    <option value="0" data-i18n="manual">Manually</option>
+                  </select>
+                  <label for="transport" data-i18n="updateVia"
+                    >Download subscription through</label
+                  ><select id="transport">
+                    <option value="direct" data-i18n="directTransport">
+                      Your internet connection
+                    </option>
+                    <option value="wireguard" data-i18n="wireguardTransport">
+                      WireGuard tunnel
+                    </option>
+                  </select>
+                  <div id="wireguardFields" class="hidden">
+                    <label
+                      class="file-button secondary"
+                      for="wireguardFile"
+                      data-i18n="importWireguard"
+                      >Import WireGuard .conf</label
+                    ><input
+                      id="wireguardFile"
+                      class="sr-only"
+                      type="file"
+                      accept=".conf,text/plain"
+                    /><label for="wireguardConfig" data-i18n="wireguardConfig"
+                      >WireGuard configuration</label
+                    ><textarea
+                      id="wireguardConfig"
+                      rows="5"
+                      spellcheck="false"
+                      autocomplete="off"
+                    ></textarea>
+                    <p
+                      id="wireguardHint"
+                      class="muted small"
+                      data-i18n="wireguardHint"
+                    >
+                      Used only to download this subscription. The tunnel closes
+                      after the update. One peer and an IPv4 default route are
+                      required.
+                    </p>
+                  </div>
+                  <details>
+                    <summary data-i18n="advanced">Advanced</summary>
+                    <label for="requestHeaders" data-i18n="requestHeaders"
+                      >HTTP headers (JSON)</label
+                    ><textarea
+                      id="requestHeaders"
+                      rows="3"
+                      spellcheck="false"
+                      placeholder='{"User-Agent": "mihomo"}'
+                    ></textarea>
+                  </details>
+                </div>
+                <div id="yamlFields" class="hidden">
+                  <label
+                    class="file-button secondary"
+                    for="yamlFile"
+                    data-i18n="importYaml"
+                    >Choose YAML file</label
+                  ><input
+                    id="yamlFile"
+                    class="sr-only"
+                    type="file"
+                    accept=".yaml,.yml,text/yaml,text/plain"
+                  /><label for="yamlContent" data-i18n="yamlContent"
+                    >Profile YAML</label
+                  ><textarea
+                    id="yamlContent"
+                    rows="9"
+                    spellcheck="false"
+                    autocomplete="off"
+                  ></textarea>
+                </div>
+                <p class="security-note" data-i18n="secureHint">
+                  Profiles and tunnel keys are encrypted on this computer using
+                  your OS secure storage.
+                </p>
+                <p
+                  id="importPolicy"
+                  class="muted small"
+                  data-i18n="importPolicy"
+                >
+                  mhm manages local ports and disables TUN, LAN access and extra
+                  listeners. Use HTTPS or inline providers with embedded keys
+                  and certificates.
+                </p>
+                <button
+                  id="saveProfile"
+                  class="primary full"
+                  type="submit"
+                  data-i18n="saveAndCheck"
+                >
+                  Save and check
+                </button>
+              </fieldset>
+            </form>
+            <div id="profileActions" class="editor-actions hidden">
+              <button
+                id="updateProfile"
+                class="secondary"
+                data-i18n="updateNow"
+              >
+                Update now</button
+              ><button
+                id="rollbackProfile"
+                class="secondary"
+                data-i18n="rollback"
+              >
+                Previous version</button
+              ><button id="deleteProfile" class="danger" data-i18n="delete">
+                Delete profile
+              </button>
+            </div>
+          </section>
+          <section id="settingsView" class="view hidden">
+            <button id="settingsBack" class="text-button back" data-i18n="back">
+              ← Back
+            </button>
+            <h1 data-i18n="settings">Settings</h1>
+            <label for="theme" data-i18n="appearance">Appearance</label
+            ><select id="theme">
+              <option value="system" data-i18n="systemTheme">System</option>
+              <option value="light" data-i18n="lightTheme">Light</option>
+              <option value="dark" data-i18n="darkTheme">Dark</option></select
+            ><label for="language" data-i18n="language">Language</label
+            ><select id="language">
+              <option value="auto" data-i18n="automatic">Automatic</option>
+              <option value="en">English</option>
+              <option value="ru">Русский</option>
+              <option value="zh_CN">简体中文</option></select
+            ><label class="check-label"
+              ><input id="killSwitch" type="checkbox" /><span
+                data-i18n="killSwitch"
+                >Block browser traffic if the connection drops</span
+              ></label
+            >
+            <p class="muted small" data-i18n="killSwitchHint">
+              Local addresses remain accessible. Press Disconnect to restore
+              your usual connection.
+            </p>
+            <details>
+              <summary data-i18n="companionSettings">Companion app</summary>
+              <label for="mihomoPath" data-i18n="mihomoPath"
+                >mihomo executable</label
+              ><input id="mihomoPath" spellcheck="false" /><button
+                id="saveCoreSettings"
+                class="secondary"
+                data-i18n="save"
+              >
+                Save
+              </button>
+              <p id="storageStatus" class="muted small"></p>
+              <div class="identity">
+                <span data-i18n="extensionId">Extension ID</span
+                ><code id="extensionId"></code
+                ><button id="copyId" class="text-button" data-i18n="copy">
+                  Copy
+                </button>
+              </div>
+            </details>
+            <button
+              id="openFullPage"
+              class="secondary full"
+              data-i18n="openFullPage"
+            >
+              Open in a tab
+            </button>
+            <p class="footer version-label">mhm</p>
+          </section>
+          <dialog id="confirmDialog">
+            <h2 id="confirmTitle"></h2>
+            <p id="confirmText"></p>
+            <div class="dialog-actions">
+              <button id="confirmCancel" class="secondary" data-i18n="cancel">
+                Cancel</button
+              ><button id="confirmOk" class="danger" data-i18n="delete">
+                Delete
+              </button>
+            </div>
+          </dialog>
+        </div>
+      </div>
+    </main>
+    <script src="i18n.js"></script>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

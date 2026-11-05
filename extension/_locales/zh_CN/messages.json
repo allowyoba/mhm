@@ -1,0 +1,584 @@
+{
+  "appName": {
+    "message": "mhm"
+  },
+  "appShortName": {
+    "message": "mhm"
+  },
+  "appDescription": {
+    "message": "在浏览器中管理 mihomo 配置、订阅和代理组。"
+  },
+  "actionTitle": {
+    "message": "mhm"
+  },
+  "settings": {
+    "message": "设置"
+  },
+  "checking": {
+    "message": "正在检查设置…"
+  },
+  "welcome": {
+    "message": "欢迎使用 MHM"
+  },
+  "setupTitle": {
+    "message": "您的配置，一键连接。"
+  },
+  "setupIntro": {
+    "message": "安装配套应用后，即可添加订阅。"
+  },
+  "stepInstall": {
+    "message": "安装扩展"
+  },
+  "stepInstalled": {
+    "message": "已完成。您已安装扩展。"
+  },
+  "stepCompanion": {
+    "message": "安装配套应用"
+  },
+  "companionHint": {
+    "message": "在下载的安装程序所在文件夹中运行以下命令。"
+  },
+  "browser": {
+    "message": "浏览器"
+  },
+  "copy": {
+    "message": "复制"
+  },
+  "macInstallHint": {
+    "message": "在下载安装程序的文件夹中运行此命令。请选择 Mac 的 Apple silicon 或 Intel 架构。"
+  },
+  "stepSubscription": {
+    "message": "添加订阅"
+  },
+  "stepSubscriptionHint": {
+    "message": "设置完成后，粘贴订阅链接或导入 YAML 配置。"
+  },
+  "checkAgain": {
+    "message": "重新检查"
+  },
+  "chooseProfile": {
+    "message": "选择配置"
+  },
+  "connect": {
+    "message": "连接"
+  },
+  "profiles": {
+    "message": "配置"
+  },
+  "addProfile": {
+    "message": "+ 添加配置"
+  },
+  "emptyProfiles": {
+    "message": "添加订阅以开始使用。"
+  },
+  "addSubscription": {
+    "message": "添加订阅"
+  },
+  "routing": {
+    "message": "路由"
+  },
+  "refresh": {
+    "message": "刷新"
+  },
+  "mode": {
+    "message": "模式"
+  },
+  "ruleMode": {
+    "message": "规则模式 · 推荐"
+  },
+  "globalMode": {
+    "message": "全部通过代理"
+  },
+  "directMode": {
+    "message": "直连"
+  },
+  "back": {
+    "message": "← 返回"
+  },
+  "profileName": {
+    "message": "名称"
+  },
+  "source": {
+    "message": "来源"
+  },
+  "subscription": {
+    "message": "订阅链接"
+  },
+  "localYaml": {
+    "message": "YAML 文件或文本"
+  },
+  "subscriptionUrl": {
+    "message": "订阅链接"
+  },
+  "showUrl": {
+    "message": "显示链接"
+  },
+  "hideUrl": {
+    "message": "隐藏链接"
+  },
+  "autoUpdate": {
+    "message": "自动更新"
+  },
+  "daily": {
+    "message": "每天"
+  },
+  "every12h": {
+    "message": "每 12 小时"
+  },
+  "every6h": {
+    "message": "每 6 小时"
+  },
+  "manual": {
+    "message": "手动"
+  },
+  "updateVia": {
+    "message": "下载订阅的连接方式"
+  },
+  "directTransport": {
+    "message": "当前网络连接"
+  },
+  "wireguardTransport": {
+    "message": "WireGuard 隧道"
+  },
+  "importWireguard": {
+    "message": "导入 WireGuard .conf"
+  },
+  "wireguardConfig": {
+    "message": "WireGuard 配置"
+  },
+  "wireguardHint": {
+    "message": "隧道仅用于下载订阅，更新后关闭。订阅地址和 DNS 服务器必须能通过 AllowedIPs 中的路由访问。"
+  },
+  "advanced": {
+    "message": "高级选项"
+  },
+  "requestHeaders": {
+    "message": "HTTP 请求头（JSON）"
+  },
+  "importYaml": {
+    "message": "选择 YAML 文件"
+  },
+  "yamlContent": {
+    "message": "YAML 配置"
+  },
+  "secureHint": {
+    "message": "配置和隧道密钥在此电脑上加密存储，并由操作系统的安全存储保护。"
+  },
+  "importPolicy": {
+    "message": "mhm 管理本地端口，并关闭 TUN、局域网访问和额外监听器。请使用 HTTPS 或内联 provider，并将密钥和证书嵌入配置。"
+  },
+  "saveAndCheck": {
+    "message": "检查并保存"
+  },
+  "updateNow": {
+    "message": "立即更新"
+  },
+  "rollback": {
+    "message": "上一版本"
+  },
+  "delete": {
+    "message": "删除配置"
+  },
+  "appearance": {
+    "message": "外观"
+  },
+  "systemTheme": {
+    "message": "跟随系统"
+  },
+  "lightTheme": {
+    "message": "浅色"
+  },
+  "darkTheme": {
+    "message": "深色"
+  },
+  "language": {
+    "message": "语言"
+  },
+  "automatic": {
+    "message": "自动"
+  },
+  "killSwitch": {
+    "message": "连接中断时阻止浏览器流量"
+  },
+  "killSwitchHint": {
+    "message": "本地地址仍然可访问。点击“断开”可恢复常规连接。"
+  },
+  "companionSettings": {
+    "message": "配套应用"
+  },
+  "mihomoPath": {
+    "message": "mihomo 可执行文件"
+  },
+  "save": {
+    "message": "保存"
+  },
+  "extensionId": {
+    "message": "扩展 ID"
+  },
+  "openFullPage": {
+    "message": "在标签页中打开"
+  },
+  "cancel": {
+    "message": "取消"
+  },
+  "unknownError": {
+    "message": "无法完成此操作。"
+  },
+  "working": {
+    "message": "正在处理…"
+  },
+  "updateFailed": {
+    "message": "更新失败"
+  },
+  "updateReady": {
+    "message": "有可用更新"
+  },
+  "connected": {
+    "message": "已连接"
+  },
+  "connecting": {
+    "message": "正在连接…"
+  },
+  "blocked": {
+    "message": "连接已中断"
+  },
+  "disconnected": {
+    "message": "已断开"
+  },
+  "blockedHint": {
+    "message": "浏览器流量已被阻止。请重新连接或点击“断开”。"
+  },
+  "activeProfile": {
+    "message": "当前连接配置"
+  },
+  "applyUpdateHint": {
+    "message": "更新已通过检查，可以应用。"
+  },
+  "connectedHint": {
+    "message": "浏览器流量遵循配置规则。"
+  },
+  "connectHint": {
+    "message": "选择配置并连接。"
+  },
+  "disconnect": {
+    "message": "断开"
+  },
+  "applyUpdate": {
+    "message": "应用更新"
+  },
+  "switchProfile": {
+    "message": "切换配置"
+  },
+  "editProfile": {
+    "message": "编辑配置"
+  },
+  "wireguardSaved": {
+    "message": "已安全保存。留空以保留现有配置。"
+  },
+  "discardTitle": {
+    "message": "放弃更改？"
+  },
+  "discardHint": {
+    "message": "您的更改尚未保存。"
+  },
+  "discard": {
+    "message": "放弃更改"
+  },
+  "secureStorageRequired": {
+    "message": "请解锁操作系统的安全存储并安装配套应用。"
+  },
+  "companionUpdateRequired": {
+    "message": "请安装或更新配套应用至 mhm 0.1.0。"
+  },
+  "secureStorage": {
+    "message": "加密存储"
+  },
+  "fileTooLarge": {
+    "message": "文件过大。YAML 上限为 8 MB，WireGuard 上限为 64 KB。"
+  },
+  "invalidHeaders": {
+    "message": "请以 JSON 对象格式输入 HTTP 请求头。"
+  },
+  "profileSaved": {
+    "message": "配置已检查并保存。"
+  },
+  "profileUpdated": {
+    "message": "订阅已更新，您可以随时应用。"
+  },
+  "profileRestored": {
+    "message": "已恢复上一版本，您可以随时应用。"
+  },
+  "deleteTitle": {
+    "message": "删除此配置？"
+  },
+  "deleteHint": {
+    "message": "将从此电脑上删除保存的配置、订阅凭据和隧道密钥。"
+  },
+  "saved": {
+    "message": "已保存。"
+  },
+  "copied": {
+    "message": "已复制。"
+  },
+  "computer": {
+    "message": "电脑"
+  },
+  "expires": {
+    "message": "有效期至"
+  },
+  "downloadNeeded": {
+    "message": "需要下载"
+  },
+  "downloadProfile": {
+    "message": "下载配置"
+  },
+  "testDelay": {
+    "message": "测试延迟"
+  },
+  "tlsMode": {
+    "message": "HTTPS 证书"
+  },
+  "tlsSystem": {
+    "message": "系统信任的证书"
+  },
+  "tlsCustom": {
+    "message": "添加 CA 证书"
+  },
+  "tlsInsecure": {
+    "message": "忽略证书错误"
+  },
+  "importCertificate": {
+    "message": "选择证书 (.crt, .cer, .pem)"
+  },
+  "certificatePem": {
+    "message": "CA 证书 (PEM)"
+  },
+  "certificateScope": {
+    "message": "仅对此订阅信任该证书，仍验证服务器名称。"
+  },
+  "tlsInsecureWarning": {
+    "message": "此订阅的证书和主机名验证已关闭。攻击者可能篡改其内容。"
+  },
+  "certificateTooLarge": {
+    "message": "证书文件必须小于 256 KB。"
+  },
+  "tlsInsecureBadge": {
+    "message": "HTTPS 验证已关闭"
+  },
+  "testingDelay": {
+    "message": "正在测试…"
+  },
+  "delayUnavailable": {
+    "message": "未返回延迟结果，请重试。"
+  },
+  "navHome": {
+    "message": "连接"
+  },
+  "navTraffic": {
+    "message": "流量"
+  },
+  "navRules": {
+    "message": "规则"
+  },
+  "viewTraffic": {
+    "message": "流量和限额"
+  },
+  "manageProfiles": {
+    "message": "管理配置"
+  },
+  "profilesEyebrow": {
+    "message": "您的连接"
+  },
+  "profilesIntro": {
+    "message": "安全保存在此电脑上的订阅和本地配置。"
+  },
+  "searchProfiles": {
+    "message": "搜索配置"
+  },
+  "noSearchResults": {
+    "message": "未找到配置。"
+  },
+  "trafficEyebrow": {
+    "message": "本地统计"
+  },
+  "trafficIntro": {
+    "message": "保存在此电脑上的连接流量统计。"
+  },
+  "today": {
+    "message": "今天"
+  },
+  "thisMonth": {
+    "message": "本月"
+  },
+  "allTime": {
+    "message": "累计"
+  },
+  "last30Days": {
+    "message": "最近 30 天"
+  },
+  "trafficChartLabel": {
+    "message": "最近 30 天的每日流量"
+  },
+  "trafficLimit": {
+    "message": "流量限额"
+  },
+  "enableLimit": {
+    "message": "启用流量限额"
+  },
+  "limitAmount": {
+    "message": "限额 (GiB)"
+  },
+  "limitPeriod": {
+    "message": "周期"
+  },
+  "monthly": {
+    "message": "每月"
+  },
+  "cycleDay": {
+    "message": "每月重置日期"
+  },
+  "whenLimitReached": {
+    "message": "达到限额时"
+  },
+  "limitWarn": {
+    "message": "显示警告"
+  },
+  "limitBlock": {
+    "message": "停止代理连接"
+  },
+  "limitHint": {
+    "message": "下载和上传均计入用量。关闭此页面后仍会限制流量。点击断开可恢复正常连接。"
+  },
+  "saveLimit": {
+    "message": "保存限额"
+  },
+  "limitSaved": {
+    "message": "流量限额已保存。"
+  },
+  "limitDisabled": {
+    "message": "未启用流量限额"
+  },
+  "limitReached": {
+    "message": "已达到流量限额"
+  },
+  "limitBlockedHint": {
+    "message": "请在流量设置中提高或关闭限额后重新连接。"
+  },
+  "renews": {
+    "message": "重置于"
+  },
+  "recentSessions": {
+    "message": "最近的连接"
+  },
+  "noTraffic": {
+    "message": "首次连接后将显示流量统计。"
+  },
+  "sessionActive": {
+    "message": "进行中"
+  },
+  "rulesEyebrow": {
+    "message": "您的路由"
+  },
+  "rulesIntro": {
+    "message": "自定义规则优先于订阅规则，更新订阅后仍会保留。"
+  },
+  "ruleProfile": {
+    "message": "配置"
+  },
+  "noRulesProfile": {
+    "message": "请先保存或下载配置。"
+  },
+  "addRule": {
+    "message": "添加规则"
+  },
+  "ruleType": {
+    "message": "匹配条件"
+  },
+  "ruleTarget": {
+    "message": "发送至"
+  },
+  "ruleValue": {
+    "message": "域名或网段"
+  },
+  "ruleSuffix": {
+    "message": "域名及子域名"
+  },
+  "ruleDomain": {
+    "message": "精确域名"
+  },
+  "ruleKeyword": {
+    "message": "域名包含"
+  },
+  "ruleIpv4": {
+    "message": "IPv4 网段"
+  },
+  "ruleIpv6": {
+    "message": "IPv6 网段"
+  },
+  "ruleAll": {
+    "message": "全部流量"
+  },
+  "customRules": {
+    "message": "自定义规则"
+  },
+  "rulesEmpty": {
+    "message": "当前使用配置中的原始规则。"
+  },
+  "rawRules": {
+    "message": "以文本编辑 mihomo 规则"
+  },
+  "saveRules": {
+    "message": "检查并保存"
+  },
+  "rulesApplyHint": {
+    "message": "保存的更改将在下次连接或点击应用后生效。"
+  },
+  "rulesSaved": {
+    "message": "规则已检查并保存。"
+  },
+  "rulesApplied": {
+    "message": "规则已应用。"
+  },
+  "unsavedChanges": {
+    "message": "有未保存的更改"
+  },
+  "moveUp": {
+    "message": "上移规则"
+  },
+  "moveDown": {
+    "message": "下移规则"
+  },
+  "removeRule": {
+    "message": "删除规则"
+  },
+  "toolbarConnected": {
+    "message": "已连接"
+  },
+  "toolbarConnecting": {
+    "message": "正在连接"
+  },
+  "toolbarBlocked": {
+    "message": "连接中断，流量已阻止"
+  },
+  "toolbarLimited": {
+    "message": "已达到流量限额"
+  },
+  "toolbarDisconnected": {
+    "message": "已断开"
+  },
+  "automaticSelection": {
+    "message": "自动选择"
+  },
+  "groupAuto": {
+    "message": "最低延迟"
+  },
+  "groupBalance": {
+    "message": "负载均衡"
+  },
+  "groupFallback": {
+    "message": "故障转移"
+  },
+  "manageLimit": {
+    "message": "管理流量限额"
+  }
+}

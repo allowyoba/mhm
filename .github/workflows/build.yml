@@ -1,0 +1,139 @@
+name: Build mhm
+on:
+  workflow_dispatch:
+  push:
+    tags: ["[0-9]*"]
+    branches: ["main", "feat/**", "fix/**", "ci/**", "chore/**"]
+    paths:
+      [
+        "extension/**",
+        "product.json",
+        "native-host/**",
+        "setup/**",
+        "scripts/**",
+        "tests/**",
+        ".github/workflows/build.yml",
+      ]
+  pull_request:
+permissions:
+  contents: read
+
+env:
+  MHM_GITHUB_TOKEN: ${{ github.token }}
+
+concurrency:
+  group: build-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: python -m pip install -r native-host/requirements-build.txt
+      - name: Fetch verified test engine
+        shell: python
+        run: |
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, str(Path.cwd()))
+          from setup import runtime
+          import tempfile, os
+          destination = Path('.build/validation')
+          destination.mkdir(parents=True, exist_ok=True)
+          asset = runtime.resolve_mihomo_asset()
+          with tempfile.TemporaryDirectory() as temp:
+              archive = Path(temp) / asset['name']
+              runtime._download_verified(asset['url'], archive, asset['sha256'])
+              runtime._extract_mihomo(archive, asset['archiveType'], destination / ('mihomo.exe' if os.name == 'nt' else 'mihomo'))
+      - run: python -B -m unittest discover -s tests -v
+      - run: python -B scripts/sync_version.py --check
+      - run: python -B scripts/validate_release.py
+      - run: python scripts/build_setup.py
+      - name: Installer smoke check
+        shell: python
+        run: |
+          import os, subprocess, sys
+          binary = '.build/validation/mihomo.exe' if os.name == 'nt' else '.build/validation/mihomo'
+          subprocess.run([sys.executable, 'scripts/smoke_setup.py', '--mihomo', binary], check=True)
+      - run: python scripts/make_checksums.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mhm-${{ matrix.os }}
+          path: |
+            dist/mhm-setup-*
+            dist/SHA256SUMS
+
+  linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            architecture: amd64
+          - os: ubuntu-24.04-arm
+            architecture: arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test Debian package
+        env:
+          MHM_LINUX_ARCH: ${{ matrix.architecture }}
+        run: ./scripts/build_linux.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mhm-linux-${{ matrix.architecture }}
+          path: .build/linux-output/
+
+  extensions:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: python scripts/build_browser_packages.py
+      - run: mkdir -p .build/firefox
+      - run: unzip -q dist/mhm-extension-firefox-*.xpi -d .build/firefox
+      - run: npx --yes web-ext@10.6.0 lint --source-dir .build/firefox
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mhm-extensions
+          path: dist/mhm-extension-*
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build, linux, extensions]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check release version
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python -c 'import json,os; assert os.environ["RELEASE_TAG"] == json.load(open("product.json"))["version"]'
+      - uses: actions/download-artifact@v4
+        with:
+          path: .build/artifacts
+      - name: Prepare release assets
+        run: python scripts/prepare_release.py .build/artifacts --output dist
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --verify-tag --title "mhm $RELEASE_TAG" --notes-file docs/release-notes.md

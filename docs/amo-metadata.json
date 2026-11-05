@@ -1,0 +1,37 @@
+{
+  "categories": {
+    "firefox": [
+      "privacy-security"
+    ]
+  },
+  "default_locale": "en-US",
+  "name": {
+    "en-US": "mhm"
+  },
+  "summary": {
+    "en-US": "Manage mihomo profiles, subscriptions and browser proxy connections with encrypted local storage."
+  },
+  "description": {
+    "en-US": "mhm manages mihomo YAML profiles and subscriptions, browser proxy connections, traffic statistics, local traffic budgets and custom routing rules. Requires the separate mhm native host for Windows, macOS or Linux. Install it from the GitHub releases and follow the setup screen. WireGuard is used only for subscription downloads; it is not a system VPN. No developer analytics or telemetry."
+  },
+  "homepage": {
+    "en-US": "https://github.com/allowyoba/mhm"
+  },
+  "support_url": {
+    "en-US": "https://github.com/allowyoba/mhm/issues"
+  },
+  "privacy_policy": {
+    "en-US": "mhm does not send analytics or diagnostics to its developer. Profiles, subscription credentials and WireGuard keys are stored locally using encrypted storage backed by the operating system. Traffic history is stored locally. Network requests go to user-selected subscription servers and proxy nodes. The installer downloads mihomo from GitHub. See https://github.com/allowyoba/mhm/blob/main/docs/privacy.md"
+  },
+  "version": {
+    "custom_license": {
+      "name": {
+        "en-US": "All rights reserved"
+      },
+      "text": {
+        "en-US": "Copyright (c) 2026 mhm contributors. All rights reserved.\n\nNo permission is granted to use, copy, modify, merge, publish, distribute,\nsublicense, sell, reverse engineer, or create derivative works from this\nsoftware except under a separate written agreement with the copyright holder.\n\nThird-party components remain subject to their respective licenses.\n\n"
+      }
+    },
+    "approval_notes": "Requires the native host from https://github.com/allowyoba/mhm/releases. Source is readable and not bundled or minified. Native Messaging ID io.mhm.browser is retained for migration. Gecko ID is mhm@allowyoba.github.io. No external scripts or developer telemetry. The native host downloads and runs mihomo; extension scripts only communicate via Native Messaging. Test using a local YAML profile with direct routing. WireGuard supports subscription downloads only."
+  }
+}
