@@ -1,0 +1,18 @@
+{
+  "chrome": {
+    "store_id": "",
+    "store_url": ""
+  },
+  "opera": {
+    "store_id": "",
+    "store_url": ""
+  },
+  "firefox": {
+    "store_id": "",
+    "store_url": ""
+  },
+  "edge": {
+    "store_id": "",
+    "store_url": ""
+  }
+}

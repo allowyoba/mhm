@@ -1,0 +1,584 @@
+{
+  "appName": {
+    "message": "mhm"
+  },
+  "appShortName": {
+    "message": "mhm"
+  },
+  "appDescription": {
+    "message": "Mihomo profiles, subscriptions and proxy groups for your browser."
+  },
+  "actionTitle": {
+    "message": "mhm"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "checking": {
+    "message": "Checking your setup…"
+  },
+  "welcome": {
+    "message": "WELCOME TO MHM"
+  },
+  "setupTitle": {
+    "message": "Your profiles. One connection."
+  },
+  "setupIntro": {
+    "message": "Install the companion app once, then add your subscription."
+  },
+  "stepInstall": {
+    "message": "Install the extension"
+  },
+  "stepInstalled": {
+    "message": "Done. You are here."
+  },
+  "stepCompanion": {
+    "message": "Install the companion app"
+  },
+  "companionHint": {
+    "message": "Run the installer for your computer using the command below."
+  },
+  "browser": {
+    "message": "Browser"
+  },
+  "copy": {
+    "message": "Copy"
+  },
+  "macInstallHint": {
+    "message": "Run this command from the folder containing the downloaded installer. Choose Apple silicon or Intel for your Mac."
+  },
+  "stepSubscription": {
+    "message": "Add your subscription"
+  },
+  "stepSubscriptionHint": {
+    "message": "Paste a URL or import a YAML profile after setup."
+  },
+  "checkAgain": {
+    "message": "Check again"
+  },
+  "chooseProfile": {
+    "message": "Choose a profile"
+  },
+  "connect": {
+    "message": "Connect"
+  },
+  "profiles": {
+    "message": "Profiles"
+  },
+  "addProfile": {
+    "message": "+ Add profile"
+  },
+  "emptyProfiles": {
+    "message": "Add a subscription to get started."
+  },
+  "addSubscription": {
+    "message": "Add subscription"
+  },
+  "routing": {
+    "message": "Routing"
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "mode": {
+    "message": "Mode"
+  },
+  "ruleMode": {
+    "message": "Rules · recommended"
+  },
+  "globalMode": {
+    "message": "All through proxy"
+  },
+  "directMode": {
+    "message": "Direct connection"
+  },
+  "back": {
+    "message": "← Back"
+  },
+  "profileName": {
+    "message": "Name"
+  },
+  "source": {
+    "message": "Source"
+  },
+  "subscription": {
+    "message": "Subscription URL"
+  },
+  "localYaml": {
+    "message": "YAML file or text"
+  },
+  "subscriptionUrl": {
+    "message": "Subscription URL"
+  },
+  "showUrl": {
+    "message": "Show URL"
+  },
+  "hideUrl": {
+    "message": "Hide URL"
+  },
+  "autoUpdate": {
+    "message": "Update automatically"
+  },
+  "daily": {
+    "message": "Every day"
+  },
+  "every12h": {
+    "message": "Every 12 hours"
+  },
+  "every6h": {
+    "message": "Every 6 hours"
+  },
+  "manual": {
+    "message": "Manually"
+  },
+  "updateVia": {
+    "message": "Download subscription through"
+  },
+  "directTransport": {
+    "message": "Your internet connection"
+  },
+  "wireguardTransport": {
+    "message": "WireGuard tunnel"
+  },
+  "importWireguard": {
+    "message": "Import WireGuard .conf"
+  },
+  "wireguardConfig": {
+    "message": "WireGuard configuration"
+  },
+  "wireguardHint": {
+    "message": "Used only to download this subscription. The tunnel closes after the update. The subscription and DNS server must be reachable through AllowedIPs."
+  },
+  "advanced": {
+    "message": "Advanced"
+  },
+  "requestHeaders": {
+    "message": "HTTP headers (JSON)"
+  },
+  "importYaml": {
+    "message": "Choose YAML file"
+  },
+  "yamlContent": {
+    "message": "Profile YAML"
+  },
+  "secureHint": {
+    "message": "Profiles and tunnel keys are encrypted on this computer using your OS secure storage."
+  },
+  "importPolicy": {
+    "message": "mhm manages local ports and disables TUN, LAN access and extra listeners. Use HTTPS or inline providers with embedded keys and certificates."
+  },
+  "saveAndCheck": {
+    "message": "Save and check"
+  },
+  "updateNow": {
+    "message": "Update now"
+  },
+  "rollback": {
+    "message": "Previous version"
+  },
+  "delete": {
+    "message": "Delete profile"
+  },
+  "appearance": {
+    "message": "Appearance"
+  },
+  "systemTheme": {
+    "message": "System"
+  },
+  "lightTheme": {
+    "message": "Light"
+  },
+  "darkTheme": {
+    "message": "Dark"
+  },
+  "language": {
+    "message": "Language"
+  },
+  "automatic": {
+    "message": "Automatic"
+  },
+  "killSwitch": {
+    "message": "Block browser traffic if the connection drops"
+  },
+  "killSwitchHint": {
+    "message": "Local addresses remain accessible. Press Disconnect to restore your usual connection."
+  },
+  "companionSettings": {
+    "message": "Companion app"
+  },
+  "mihomoPath": {
+    "message": "mihomo executable"
+  },
+  "save": {
+    "message": "Save"
+  },
+  "extensionId": {
+    "message": "Extension ID"
+  },
+  "openFullPage": {
+    "message": "Open in a tab"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "unknownError": {
+    "message": "The operation could not be completed."
+  },
+  "working": {
+    "message": "Working…"
+  },
+  "updateFailed": {
+    "message": "Update failed"
+  },
+  "updateReady": {
+    "message": "Update ready"
+  },
+  "connected": {
+    "message": "Connected"
+  },
+  "connecting": {
+    "message": "Connecting…"
+  },
+  "blocked": {
+    "message": "Connection interrupted"
+  },
+  "disconnected": {
+    "message": "Disconnected"
+  },
+  "blockedHint": {
+    "message": "Browser traffic is blocked. Reconnect or press Disconnect."
+  },
+  "activeProfile": {
+    "message": "Connected with"
+  },
+  "applyUpdateHint": {
+    "message": "A checked update is ready to apply."
+  },
+  "connectedHint": {
+    "message": "Browser traffic follows your profile."
+  },
+  "connectHint": {
+    "message": "Choose a profile and connect."
+  },
+  "disconnect": {
+    "message": "Disconnect"
+  },
+  "applyUpdate": {
+    "message": "Apply update"
+  },
+  "switchProfile": {
+    "message": "Switch profile"
+  },
+  "editProfile": {
+    "message": "Edit profile"
+  },
+  "wireguardSaved": {
+    "message": "Saved securely. Leave empty to keep the current configuration."
+  },
+  "discardTitle": {
+    "message": "Discard changes?"
+  },
+  "discardHint": {
+    "message": "Your changes have not been saved."
+  },
+  "discard": {
+    "message": "Discard"
+  },
+  "secureStorageRequired": {
+    "message": "Unlock your OS secure storage and install the companion app."
+  },
+  "companionUpdateRequired": {
+    "message": "Install or update the companion app to mhm 0.1.1."
+  },
+  "secureStorage": {
+    "message": "Encrypted storage"
+  },
+  "fileTooLarge": {
+    "message": "The file is too large. YAML supports up to 8 MB, WireGuard up to 64 KB."
+  },
+  "invalidHeaders": {
+    "message": "Enter HTTP headers as a JSON object."
+  },
+  "profileSaved": {
+    "message": "Profile checked and saved."
+  },
+  "profileUpdated": {
+    "message": "Subscription updated. Apply it when you are ready."
+  },
+  "profileRestored": {
+    "message": "Previous version restored. Apply it when you are ready."
+  },
+  "deleteTitle": {
+    "message": "Delete this profile?"
+  },
+  "deleteHint": {
+    "message": "The saved profile, subscription credentials and tunnel keys will be removed from this computer."
+  },
+  "saved": {
+    "message": "Saved."
+  },
+  "copied": {
+    "message": "Copied."
+  },
+  "computer": {
+    "message": "Computer"
+  },
+  "expires": {
+    "message": "Until"
+  },
+  "downloadNeeded": {
+    "message": "Download required"
+  },
+  "downloadProfile": {
+    "message": "Download profile"
+  },
+  "testDelay": {
+    "message": "Check latency"
+  },
+  "tlsMode": {
+    "message": "HTTPS certificate"
+  },
+  "tlsSystem": {
+    "message": "System trusted certificates"
+  },
+  "tlsCustom": {
+    "message": "Add a CA certificate"
+  },
+  "tlsInsecure": {
+    "message": "Ignore certificate errors"
+  },
+  "importCertificate": {
+    "message": "Choose certificate (.crt, .cer, .pem)"
+  },
+  "certificatePem": {
+    "message": "CA certificate (PEM)"
+  },
+  "certificateScope": {
+    "message": "Trusted for this subscription only. Hostname verification stays enabled."
+  },
+  "tlsInsecureWarning": {
+    "message": "Certificate and hostname verification are disabled for this subscription. An attacker could replace its content."
+  },
+  "certificateTooLarge": {
+    "message": "Certificate files must be smaller than 256 KB."
+  },
+  "tlsInsecureBadge": {
+    "message": "HTTPS verification off"
+  },
+  "testingDelay": {
+    "message": "Checking…"
+  },
+  "delayUnavailable": {
+    "message": "No latency result was returned. Try again."
+  },
+  "navHome": {
+    "message": "Connection"
+  },
+  "navTraffic": {
+    "message": "Traffic"
+  },
+  "navRules": {
+    "message": "Rules"
+  },
+  "viewTraffic": {
+    "message": "Traffic & limits"
+  },
+  "manageProfiles": {
+    "message": "Manage profiles"
+  },
+  "profilesEyebrow": {
+    "message": "YOUR CONNECTIONS"
+  },
+  "profilesIntro": {
+    "message": "Subscriptions and local configurations, securely stored on your computer."
+  },
+  "searchProfiles": {
+    "message": "Search profiles"
+  },
+  "noSearchResults": {
+    "message": "No matching profiles."
+  },
+  "trafficEyebrow": {
+    "message": "LOCAL STATISTICS"
+  },
+  "trafficIntro": {
+    "message": "Usage across your profiles, saved on this computer."
+  },
+  "today": {
+    "message": "Today"
+  },
+  "thisMonth": {
+    "message": "This month"
+  },
+  "allTime": {
+    "message": "All time"
+  },
+  "last30Days": {
+    "message": "Last 30 days"
+  },
+  "trafficChartLabel": {
+    "message": "Daily traffic over the last 30 days"
+  },
+  "trafficLimit": {
+    "message": "Traffic limit"
+  },
+  "enableLimit": {
+    "message": "Enable a traffic limit"
+  },
+  "limitAmount": {
+    "message": "Limit (GiB)"
+  },
+  "limitPeriod": {
+    "message": "Period"
+  },
+  "monthly": {
+    "message": "Monthly"
+  },
+  "cycleDay": {
+    "message": "Renew on day of month"
+  },
+  "whenLimitReached": {
+    "message": "When the limit is reached"
+  },
+  "limitWarn": {
+    "message": "Show a warning"
+  },
+  "limitBlock": {
+    "message": "Stop the proxy connection"
+  },
+  "limitHint": {
+    "message": "Download and upload both count. Blocking works while this page is closed. Disconnect restores your normal connection."
+  },
+  "saveLimit": {
+    "message": "Save limit"
+  },
+  "limitSaved": {
+    "message": "Traffic limit saved."
+  },
+  "limitDisabled": {
+    "message": "No traffic limit enabled"
+  },
+  "limitReached": {
+    "message": "Traffic limit reached"
+  },
+  "limitBlockedHint": {
+    "message": "Increase or disable the limit in Traffic to reconnect."
+  },
+  "renews": {
+    "message": "Renews"
+  },
+  "recentSessions": {
+    "message": "Recent sessions"
+  },
+  "noTraffic": {
+    "message": "Traffic will appear after your first connection."
+  },
+  "sessionActive": {
+    "message": "Active"
+  },
+  "rulesEyebrow": {
+    "message": "YOUR ROUTING"
+  },
+  "rulesIntro": {
+    "message": "Custom rules run before subscription rules and survive subscription updates."
+  },
+  "ruleProfile": {
+    "message": "Profile"
+  },
+  "noRulesProfile": {
+    "message": "Save or download a profile first."
+  },
+  "addRule": {
+    "message": "Add rule"
+  },
+  "ruleType": {
+    "message": "Match"
+  },
+  "ruleTarget": {
+    "message": "Send to"
+  },
+  "ruleValue": {
+    "message": "Domain or network"
+  },
+  "ruleSuffix": {
+    "message": "Domain and subdomains"
+  },
+  "ruleDomain": {
+    "message": "Exact domain"
+  },
+  "ruleKeyword": {
+    "message": "Domain contains"
+  },
+  "ruleIpv4": {
+    "message": "IPv4 network"
+  },
+  "ruleIpv6": {
+    "message": "IPv6 network"
+  },
+  "ruleAll": {
+    "message": "All traffic"
+  },
+  "customRules": {
+    "message": "Custom rules"
+  },
+  "rulesEmpty": {
+    "message": "The profile currently uses its original rules."
+  },
+  "rawRules": {
+    "message": "Edit mihomo rules as text"
+  },
+  "saveRules": {
+    "message": "Check and save"
+  },
+  "rulesApplyHint": {
+    "message": "Saved changes take effect on the next connection or when you press Apply."
+  },
+  "rulesSaved": {
+    "message": "Rules checked and saved."
+  },
+  "rulesApplied": {
+    "message": "Rules applied."
+  },
+  "unsavedChanges": {
+    "message": "Unsaved changes"
+  },
+  "moveUp": {
+    "message": "Move rule up"
+  },
+  "moveDown": {
+    "message": "Move rule down"
+  },
+  "removeRule": {
+    "message": "Remove rule"
+  },
+  "toolbarConnected": {
+    "message": "Connected"
+  },
+  "toolbarConnecting": {
+    "message": "Connecting"
+  },
+  "toolbarBlocked": {
+    "message": "Connection interrupted — traffic blocked"
+  },
+  "toolbarLimited": {
+    "message": "Traffic limit reached"
+  },
+  "toolbarDisconnected": {
+    "message": "Disconnected"
+  },
+  "automaticSelection": {
+    "message": "Automatic selection"
+  },
+  "groupAuto": {
+    "message": "Lowest latency"
+  },
+  "groupBalance": {
+    "message": "Load balancing"
+  },
+  "groupFallback": {
+    "message": "Fallback"
+  },
+  "manageLimit": {
+    "message": "Manage traffic limit"
+  }
+}

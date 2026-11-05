@@ -1,0 +1,29 @@
+name: Submit Firefox to Mozilla
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mozilla-submission
+  cancel-in-progress: false
+jobs:
+  submit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "22"
+      - run: python scripts/sign_firefox.py
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: mhm-firefox-signed
+          path: dist/mozilla/*.xpi
+          if-no-files-found: ignore

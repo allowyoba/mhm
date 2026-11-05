@@ -1,0 +1,584 @@
+{
+  "appName": {
+    "message": "mhm"
+  },
+  "appShortName": {
+    "message": "mhm"
+  },
+  "appDescription": {
+    "message": "Профили mihomo, подписки и группы прокси для браузера."
+  },
+  "actionTitle": {
+    "message": "mhm"
+  },
+  "settings": {
+    "message": "Настройки"
+  },
+  "checking": {
+    "message": "Проверяем установку…"
+  },
+  "welcome": {
+    "message": "ДОБРО ПОЖАЛОВАТЬ В MHM"
+  },
+  "setupTitle": {
+    "message": "Ваши профили. Одно подключение."
+  },
+  "setupIntro": {
+    "message": "Установите приложение-компаньон, затем добавьте подписку."
+  },
+  "stepInstall": {
+    "message": "Установите расширение"
+  },
+  "stepInstalled": {
+    "message": "Готово. Вы уже здесь."
+  },
+  "stepCompanion": {
+    "message": "Установите приложение-компаньон"
+  },
+  "companionHint": {
+    "message": "Запустите установщик для вашего компьютера командой ниже."
+  },
+  "browser": {
+    "message": "Браузер"
+  },
+  "copy": {
+    "message": "Копировать"
+  },
+  "macInstallHint": {
+    "message": "Выполните команду из папки со скачанным установщиком. Для Mac выберите Apple silicon или Intel."
+  },
+  "stepSubscription": {
+    "message": "Добавьте подписку"
+  },
+  "stepSubscriptionHint": {
+    "message": "После установки вставьте ссылку или импортируйте YAML-профиль."
+  },
+  "checkAgain": {
+    "message": "Проверить снова"
+  },
+  "chooseProfile": {
+    "message": "Выберите профиль"
+  },
+  "connect": {
+    "message": "Подключить"
+  },
+  "profiles": {
+    "message": "Профили"
+  },
+  "addProfile": {
+    "message": "+ Добавить профиль"
+  },
+  "emptyProfiles": {
+    "message": "Добавьте подписку, чтобы начать."
+  },
+  "addSubscription": {
+    "message": "Добавить подписку"
+  },
+  "routing": {
+    "message": "Маршрутизация"
+  },
+  "refresh": {
+    "message": "Обновить"
+  },
+  "mode": {
+    "message": "Режим"
+  },
+  "ruleMode": {
+    "message": "По правилам · рекомендуется"
+  },
+  "globalMode": {
+    "message": "Всё через прокси"
+  },
+  "directMode": {
+    "message": "Напрямую"
+  },
+  "back": {
+    "message": "← Назад"
+  },
+  "profileName": {
+    "message": "Название"
+  },
+  "source": {
+    "message": "Источник"
+  },
+  "subscription": {
+    "message": "Ссылка на подписку"
+  },
+  "localYaml": {
+    "message": "YAML-файл или текст"
+  },
+  "subscriptionUrl": {
+    "message": "Ссылка на подписку"
+  },
+  "showUrl": {
+    "message": "Показать ссылку"
+  },
+  "hideUrl": {
+    "message": "Скрыть ссылку"
+  },
+  "autoUpdate": {
+    "message": "Обновлять автоматически"
+  },
+  "daily": {
+    "message": "Каждый день"
+  },
+  "every12h": {
+    "message": "Каждые 12 часов"
+  },
+  "every6h": {
+    "message": "Каждые 6 часов"
+  },
+  "manual": {
+    "message": "Вручную"
+  },
+  "updateVia": {
+    "message": "Загружать подписку через"
+  },
+  "directTransport": {
+    "message": "Ваше интернет-соединение"
+  },
+  "wireguardTransport": {
+    "message": "Туннель WireGuard"
+  },
+  "importWireguard": {
+    "message": "Импортировать WireGuard .conf"
+  },
+  "wireguardConfig": {
+    "message": "Конфигурация WireGuard"
+  },
+  "wireguardHint": {
+    "message": "Туннель используется для загрузки подписки и закрывается после обновления. Адрес подписки и DNS-сервер должны быть доступны через маршруты AllowedIPs."
+  },
+  "advanced": {
+    "message": "Дополнительно"
+  },
+  "requestHeaders": {
+    "message": "HTTP-заголовки (JSON)"
+  },
+  "importYaml": {
+    "message": "Выбрать YAML-файл"
+  },
+  "yamlContent": {
+    "message": "YAML профиля"
+  },
+  "secureHint": {
+    "message": "Профили и ключи туннеля хранятся на этом компьютере в зашифрованном виде с защитой вашей ОС."
+  },
+  "importPolicy": {
+    "message": "mhm управляет локальными портами и отключает TUN, доступ из LAN и дополнительные слушатели. Используйте HTTPS или inline providers со встроенными ключами и сертификатами."
+  },
+  "saveAndCheck": {
+    "message": "Проверить и сохранить"
+  },
+  "updateNow": {
+    "message": "Обновить сейчас"
+  },
+  "rollback": {
+    "message": "Предыдущая версия"
+  },
+  "delete": {
+    "message": "Удалить профиль"
+  },
+  "appearance": {
+    "message": "Оформление"
+  },
+  "systemTheme": {
+    "message": "Как в системе"
+  },
+  "lightTheme": {
+    "message": "Светлое"
+  },
+  "darkTheme": {
+    "message": "Тёмное"
+  },
+  "language": {
+    "message": "Язык"
+  },
+  "automatic": {
+    "message": "Автоматически"
+  },
+  "killSwitch": {
+    "message": "Блокировать трафик браузера при обрыве связи"
+  },
+  "killSwitchHint": {
+    "message": "Локальные адреса остаются доступны. Кнопка «Отключить» возвращает обычное соединение."
+  },
+  "companionSettings": {
+    "message": "Приложение-компаньон"
+  },
+  "mihomoPath": {
+    "message": "Исполняемый файл mihomo"
+  },
+  "save": {
+    "message": "Сохранить"
+  },
+  "extensionId": {
+    "message": "ID расширения"
+  },
+  "openFullPage": {
+    "message": "Открыть во вкладке"
+  },
+  "cancel": {
+    "message": "Отмена"
+  },
+  "unknownError": {
+    "message": "Не удалось выполнить действие."
+  },
+  "working": {
+    "message": "Выполняется…"
+  },
+  "updateFailed": {
+    "message": "Ошибка обновления"
+  },
+  "updateReady": {
+    "message": "Есть обновление"
+  },
+  "connected": {
+    "message": "Подключено"
+  },
+  "connecting": {
+    "message": "Подключаемся…"
+  },
+  "blocked": {
+    "message": "Соединение прервано"
+  },
+  "disconnected": {
+    "message": "Отключено"
+  },
+  "blockedHint": {
+    "message": "Трафик браузера заблокирован. Подключитесь снова или нажмите «Отключить»."
+  },
+  "activeProfile": {
+    "message": "Подключено через"
+  },
+  "applyUpdateHint": {
+    "message": "Проверенное обновление готово к применению."
+  },
+  "connectedHint": {
+    "message": "Трафик браузера следует правилам профиля."
+  },
+  "connectHint": {
+    "message": "Выберите профиль и подключитесь."
+  },
+  "disconnect": {
+    "message": "Отключить"
+  },
+  "applyUpdate": {
+    "message": "Применить обновление"
+  },
+  "switchProfile": {
+    "message": "Сменить профиль"
+  },
+  "editProfile": {
+    "message": "Настроить профиль"
+  },
+  "wireguardSaved": {
+    "message": "Сохранено защищённо. Оставьте пустым, чтобы использовать текущую конфигурацию."
+  },
+  "discardTitle": {
+    "message": "Отменить изменения?"
+  },
+  "discardHint": {
+    "message": "Изменения ещё не сохранены."
+  },
+  "discard": {
+    "message": "Отменить изменения"
+  },
+  "secureStorageRequired": {
+    "message": "Разблокируйте защищённое хранилище ОС и установите приложение-компаньон."
+  },
+  "companionUpdateRequired": {
+    "message": "Установите или обновите приложение-компаньон до mhm 0.1.1."
+  },
+  "secureStorage": {
+    "message": "Зашифрованное хранилище"
+  },
+  "fileTooLarge": {
+    "message": "Слишком большой файл. Максимум 8 МБ для YAML и 64 КБ для WireGuard."
+  },
+  "invalidHeaders": {
+    "message": "Введите HTTP-заголовки в виде JSON-объекта."
+  },
+  "profileSaved": {
+    "message": "Профиль проверен и сохранён."
+  },
+  "profileUpdated": {
+    "message": "Подписка обновлена. Примените её в удобный момент."
+  },
+  "profileRestored": {
+    "message": "Предыдущая версия восстановлена. Её можно применить."
+  },
+  "deleteTitle": {
+    "message": "Удалить профиль?"
+  },
+  "deleteHint": {
+    "message": "Профиль, данные подписки и ключи туннеля будут удалены с этого компьютера."
+  },
+  "saved": {
+    "message": "Сохранено."
+  },
+  "copied": {
+    "message": "Скопировано."
+  },
+  "computer": {
+    "message": "Компьютер"
+  },
+  "expires": {
+    "message": "До"
+  },
+  "downloadNeeded": {
+    "message": "Требуется загрузка"
+  },
+  "downloadProfile": {
+    "message": "Загрузить профиль"
+  },
+  "testDelay": {
+    "message": "Проверить задержку"
+  },
+  "tlsMode": {
+    "message": "HTTPS-сертификат"
+  },
+  "tlsSystem": {
+    "message": "Доверенные сертификаты системы"
+  },
+  "tlsCustom": {
+    "message": "Добавить сертификат CA"
+  },
+  "tlsInsecure": {
+    "message": "Игнорировать ошибки сертификата"
+  },
+  "importCertificate": {
+    "message": "Выбрать сертификат (.crt, .cer, .pem)"
+  },
+  "certificatePem": {
+    "message": "Сертификат CA (PEM)"
+  },
+  "certificateScope": {
+    "message": "Доверие действует только для этой подписки. Проверка имени сервера включена."
+  },
+  "tlsInsecureWarning": {
+    "message": "Для этой подписки отключены проверка сертификата и имени сервера. Злоумышленник может подменить её содержимое."
+  },
+  "certificateTooLarge": {
+    "message": "Размер сертификата должен быть меньше 256 КБ."
+  },
+  "tlsInsecureBadge": {
+    "message": "Без проверки HTTPS"
+  },
+  "testingDelay": {
+    "message": "Проверяем…"
+  },
+  "delayUnavailable": {
+    "message": "Не удалось получить задержку. Попробуйте ещё раз."
+  },
+  "navHome": {
+    "message": "Подключение"
+  },
+  "navTraffic": {
+    "message": "Трафик"
+  },
+  "navRules": {
+    "message": "Правила"
+  },
+  "viewTraffic": {
+    "message": "Трафик и лимиты"
+  },
+  "manageProfiles": {
+    "message": "Управление профилями"
+  },
+  "profilesEyebrow": {
+    "message": "ВАШИ ПОДКЛЮЧЕНИЯ"
+  },
+  "profilesIntro": {
+    "message": "Подписки и локальные конфигурации с защищённым хранением на вашем компьютере."
+  },
+  "searchProfiles": {
+    "message": "Поиск профилей"
+  },
+  "noSearchResults": {
+    "message": "Профили не найдены."
+  },
+  "trafficEyebrow": {
+    "message": "ЛОКАЛЬНАЯ СТАТИСТИКА"
+  },
+  "trafficIntro": {
+    "message": "Расход трафика по вашим подключениям. Данные сохраняются на этом компьютере."
+  },
+  "today": {
+    "message": "Сегодня"
+  },
+  "thisMonth": {
+    "message": "Этот месяц"
+  },
+  "allTime": {
+    "message": "Всего"
+  },
+  "last30Days": {
+    "message": "Последние 30 дней"
+  },
+  "trafficChartLabel": {
+    "message": "Ежедневный трафик за последние 30 дней"
+  },
+  "trafficLimit": {
+    "message": "Лимит трафика"
+  },
+  "enableLimit": {
+    "message": "Включить лимит трафика"
+  },
+  "limitAmount": {
+    "message": "Лимит (ГиБ)"
+  },
+  "limitPeriod": {
+    "message": "Период"
+  },
+  "monthly": {
+    "message": "Каждый месяц"
+  },
+  "cycleDay": {
+    "message": "День обновления лимита"
+  },
+  "whenLimitReached": {
+    "message": "При достижении лимита"
+  },
+  "limitWarn": {
+    "message": "Показывать предупреждение"
+  },
+  "limitBlock": {
+    "message": "Остановить прокси-подключение"
+  },
+  "limitHint": {
+    "message": "Учитываются загрузка и отправка. Ограничение работает при закрытом окне расширения. Кнопка «Отключить» возвращает обычное соединение."
+  },
+  "saveLimit": {
+    "message": "Сохранить лимит"
+  },
+  "limitSaved": {
+    "message": "Лимит трафика сохранён."
+  },
+  "limitDisabled": {
+    "message": "Лимит трафика выключен"
+  },
+  "limitReached": {
+    "message": "Лимит трафика исчерпан"
+  },
+  "limitBlockedHint": {
+    "message": "Для подключения увеличьте или отключите лимит в разделе «Трафик»."
+  },
+  "renews": {
+    "message": "Обновится"
+  },
+  "recentSessions": {
+    "message": "Последние подключения"
+  },
+  "noTraffic": {
+    "message": "Статистика появится после первого подключения."
+  },
+  "sessionActive": {
+    "message": "Активно"
+  },
+  "rulesEyebrow": {
+    "message": "ВАША МАРШРУТИЗАЦИЯ"
+  },
+  "rulesIntro": {
+    "message": "Ваши правила применяются перед правилами подписки и сохраняются при её обновлении."
+  },
+  "ruleProfile": {
+    "message": "Профиль"
+  },
+  "noRulesProfile": {
+    "message": "Сначала сохраните или загрузите профиль."
+  },
+  "addRule": {
+    "message": "Добавить правило"
+  },
+  "ruleType": {
+    "message": "Условие"
+  },
+  "ruleTarget": {
+    "message": "Направить через"
+  },
+  "ruleValue": {
+    "message": "Домен или сеть"
+  },
+  "ruleSuffix": {
+    "message": "Домен и поддомены"
+  },
+  "ruleDomain": {
+    "message": "Точный домен"
+  },
+  "ruleKeyword": {
+    "message": "Домен содержит"
+  },
+  "ruleIpv4": {
+    "message": "Сеть IPv4"
+  },
+  "ruleIpv6": {
+    "message": "Сеть IPv6"
+  },
+  "ruleAll": {
+    "message": "Любой трафик"
+  },
+  "customRules": {
+    "message": "Пользовательские правила"
+  },
+  "rulesEmpty": {
+    "message": "Профиль использует исходные правила."
+  },
+  "rawRules": {
+    "message": "Редактировать правила mihomo текстом"
+  },
+  "saveRules": {
+    "message": "Проверить и сохранить"
+  },
+  "rulesApplyHint": {
+    "message": "Изменения вступят в силу при следующем подключении или после нажатия «Применить»."
+  },
+  "rulesSaved": {
+    "message": "Правила проверены и сохранены."
+  },
+  "rulesApplied": {
+    "message": "Правила применены."
+  },
+  "unsavedChanges": {
+    "message": "Есть несохранённые изменения"
+  },
+  "moveUp": {
+    "message": "Переместить правило вверх"
+  },
+  "moveDown": {
+    "message": "Переместить правило вниз"
+  },
+  "removeRule": {
+    "message": "Удалить правило"
+  },
+  "toolbarConnected": {
+    "message": "Подключено"
+  },
+  "toolbarConnecting": {
+    "message": "Подключение"
+  },
+  "toolbarBlocked": {
+    "message": "Соединение прервано — трафик заблокирован"
+  },
+  "toolbarLimited": {
+    "message": "Лимит трафика исчерпан"
+  },
+  "toolbarDisconnected": {
+    "message": "Отключено"
+  },
+  "automaticSelection": {
+    "message": "Автоматический выбор"
+  },
+  "groupAuto": {
+    "message": "Минимальная задержка"
+  },
+  "groupBalance": {
+    "message": "Балансировка нагрузки"
+  },
+  "groupFallback": {
+    "message": "Резервирование"
+  },
+  "manageLimit": {
+    "message": "Изменить лимит"
+  }
+}
