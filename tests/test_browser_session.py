@@ -11,12 +11,12 @@ class BrowserSessionTests(unittest.TestCase):
     def test_last_window_stops_pending_connection_and_requires_new_session(self):
         script = r"""
 const vm=require('vm'),fs=require('fs'),path=require('path'),assert=require('assert');
-let listener,onRemoved,onCreated,onStartup,onAlarm,windowCount=1,core=false,ports=0,proxy=null,hold=false,release,privateAccess=false;
+let listener,onRemoved,onCreated,onStartup,onAlarm,windowCount=1,core=false,ports=0,proxy=null,hold=false,release,holdProxy=false,releaseProxy,privateAccess=false;
 const storage={mhmConnection:{active:true}};
 const ctx={console,setTimeout,clearTimeout,Map,Set,Date,importScripts(...files){for(const file of files)vm.runInContext(fs.readFileSync(path.join(path.dirname(process.argv[1]),file),'utf8'),ctx);},
  chrome:{storage:{local:{get:async()=>storage,set:async x=>Object.assign(storage,x)}},
  windows:{getAll:async()=>Array.from({length:windowCount},()=>({type:'normal'})),onRemoved:{addListener:f=>onRemoved=f},onCreated:{addListener:f=>onCreated=f}},
- proxy:{settings:{set:async x=>{proxy=x.value},clear:async()=>{proxy=null},get:async()=>({levelOfControl:'controlled_by_this_extension'})}},
+ proxy:{settings:{set:async x=>{if(holdProxy&&x.value.http.endsWith(":10808"))await new Promise(resolve=>releaseProxy=resolve);proxy=x.value},clear:async()=>{proxy=null},get:async()=>({levelOfControl:'controlled_by_this_extension'})}},
  extension:{isAllowedIncognitoAccess:async()=>privateAccess},
  alarms:{create:async()=>{},onAlarm:{addListener:f=>onAlarm=f}},tabs:{create:async()=>{}},
  runtime:{id:'test',getBrowserInfo:async()=>({name:'Firefox'}),onMessage:{addListener:f=>listener=f},onInstalled:{addListener(){}},onStartup:{addListener:f=>onStartup=f},sendMessage:async()=>{},
@@ -43,6 +43,11 @@ const send=action=>new Promise(resolve=>listener(action,{id:'test'},resolve));
  const count=ports;release();await new Promise(setImmediate);await onAlarm({name:'profile-updates'});assert.equal(ports,count,'alarms must not reopen a closed session');
  result=await send({action:'connect',profileId:'p'});assert.equal(result.errorCode,'SESSION_CLOSED');assert.equal(storage.mhmConnection.active,false);
  windowCount=1;onCreated();hold=false;assert((await send({action:'connect',profileId:'p'})).ok);assert(core);assert.equal(ports,count+1);
+
+ holdProxy=true;const pendingProxy=send({action:'connect',profileId:'p'});await new Promise(setImmediate);assert(releaseProxy);
+ windowCount=0;const closing=onRemoved();await new Promise(setImmediate);assert(!core,'native port must close before a delayed proxy update');releaseProxy();await closing;
+ result=await pendingProxy;assert.equal(result.errorCode,'SESSION_CLOSED');assert.equal(proxy,null);assert.equal(storage.mhmConnection.active,false);assert.equal(vm.runInContext('state.status',ctx),'disconnected');
+ windowCount=1;onCreated();holdProxy=false;assert((await send({action:'connect',profileId:'p'})).ok);
  await onStartup();assert(!core);assert.equal(proxy,null);assert.equal(storage.mhmConnection.active,false);
 })().catch(error=>{console.error(error);process.exitCode=1;});
 """

@@ -11,6 +11,7 @@ const toolbar = new MhmToolbar();
 let operation = null;
 let sessionClosing = false;
 let sessionGeneration = 0;
+let windowGeneration = 0;
 let state = { status: "disconnected", profileId: null };
 let profiles = [];
 let selectedProfileId = null;
@@ -145,9 +146,19 @@ async function connect(profileId) {
       throw error;
     }
     await setBrowserProxy(result.localPort);
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     state = result;
     selectedProfileId = profileId;
     await chrome.storage.local.set({ selectedProfileId });
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     return result;
   } catch (error) {
     if (sessionClosing || generation !== sessionGeneration) throw error;
@@ -358,12 +369,19 @@ async function endBrowserSession() {
 }
 if (chrome.windows) {
   chrome.windows.onRemoved.addListener(async () => {
-    const windows = await chrome.windows.getAll({
-      windowTypes: ["normal", "popup"],
-    });
-    if (!windows.length) await endBrowserSession();
+    const generation = windowGeneration;
+    try {
+      const windows = await chrome.windows.getAll({
+        windowTypes: ["normal", "popup"],
+      });
+      if (!windows.length && generation === windowGeneration)
+        await endBrowserSession();
+    } catch {
+      if (generation === windowGeneration) await endBrowserSession();
+    }
   });
   chrome.windows.onCreated.addListener(() => {
+    windowGeneration += 1;
     sessionClosing = false;
   });
 }
