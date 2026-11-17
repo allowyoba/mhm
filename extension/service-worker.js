@@ -86,11 +86,23 @@ function broadcast() {
     })
     .catch(() => {});
 }
-function nativeRequest(command, payload = {}, timeout = 90000) {
+async function nativeRequest(command, payload = {}, timeout = 90000) {
   if (sessionClosing) {
     const error = new Error("The browser session has ended.");
     error.code = "SESSION_CLOSED";
     return Promise.reject(error);
+  }
+  const generation = sessionGeneration;
+  if (!native.port && chrome.windows) {
+    const windows = await chrome.windows.getAll({
+      windowTypes: ["normal", "popup"],
+    });
+    if (!windows.length) sessionClosing = true;
+  }
+  if (sessionClosing || generation !== sessionGeneration) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    throw error;
   }
   return native.request(command, payload, timeout);
 }
@@ -169,6 +181,7 @@ async function connect(profileId) {
     }
     // A failed candidate can leave the prior core running after native rollback.
     const current = await nativeRequest("status", {}, 5000).catch(() => null);
+    if (sessionClosing || generation !== sessionGeneration) throw error;
     if (current?.status === "connected") {
       await setBrowserProxy(current.localPort);
       state = current;

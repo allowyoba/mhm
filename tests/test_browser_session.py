@@ -32,6 +32,7 @@ const ctx={console,setTimeout,clearTimeout,Map,Set,Date,importScripts(...files){
 ctx.browser=ctx.chrome;vm.createContext(ctx);vm.runInContext(fs.readFileSync(process.argv[1],'utf8'),ctx);
 const send=action=>new Promise(resolve=>listener(action,{id:'test'},resolve));
 (async()=>{
+ if(process.argv[2]==='no-windows'){windowCount=0;let result=await send({action:'initialize'});assert.equal(result.errorCode,'SESSION_CLOSED');assert.equal(ports,0,'a restarted background worker must not start a native host without browser windows');await onAlarm({name:'profile-updates'});assert.equal(ports,0);windowCount=1;onCreated();}
  await send({action:'initialize'});privateAccess=false;
  assert((await send({action:'saveMihomoProfile',name:'First',yaml:'rules: [MATCH,DIRECT]'})).ok,'saving a first profile needs no debugger or proxy access');
  let result=await send({action:'connect',profileId:'p'});assert.equal(result.errorCode,'FIREFOX_PRIVATE_ACCESS');assert(!core);
@@ -51,10 +52,18 @@ const send=action=>new Promise(resolve=>listener(action,{id:'test'},resolve));
  await onStartup();assert(!core);assert.equal(proxy,null);assert.equal(storage.mhmConnection.active,false);
 })().catch(error=>{console.error(error);process.exitCode=1;});
 """
-        result = subprocess.run(
-            ["node", "-e", script, str(ROOT / "extension/service-worker.js")],
-            capture_output=True,
-            text=True,
-            timeout=20,
-        )
-        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for mode in ("open", "no-windows"):
+            with self.subTest(mode=mode):
+                result = subprocess.run(
+                    [
+                        "node",
+                        "-e",
+                        script,
+                        str(ROOT / "extension/service-worker.js"),
+                        mode,
+                    ],
+                    capture_output=True,
+                    text=True,
+                    timeout=20,
+                )
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
