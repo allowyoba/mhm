@@ -624,6 +624,20 @@ class ManagedCoreProcess:
             self._start_windows_watchdog(process.pid)
         elif sys.platform == "darwin":
             self._start_macos_watchdog(process.pid)
+        protected = True
+        if os.name == "nt":
+            protected = self._job is not None or (
+                self._win_watcher is not None and self._win_watcher.poll() is None
+            )
+        elif sys.platform == "darwin":
+            protected = (
+                self._mac_watcher is not None and self._mac_watcher.poll() is None
+            )
+        if not protected:
+            raise HostError(
+                "Could not enable connection shutdown protection",
+                "DEPENDENCY_UNAVAILABLE",
+            )
         return process
 
     def _start_windows_watchdog(self, child_pid: int) -> None:
@@ -1071,6 +1085,11 @@ class MihomoProcess(ManagedCoreProcess):
             deadline = time.monotonic() + 30
             while time.monotonic() < deadline:
                 if self.process.poll() is not None:
+                    if self.process.returncode == 126:
+                        raise HostError(
+                            "Could not enable connection shutdown protection",
+                            "DEPENDENCY_UNAVAILABLE",
+                        )
                     raise HostError("mihomo could not start this profile")
                 try:
                     self.api("GET", "/version", timeout=0.3)
@@ -1583,7 +1602,10 @@ def main() -> int:
         and len(sys.argv) >= 5
         and sys.argv[1] == "--run-core"
     ):
-        _linux_child_setup(int(sys.argv[2]))
+        try:
+            _linux_child_setup(int(sys.argv[2]))
+        except (OSError, ValueError):
+            return 126
         os.execv(sys.argv[3], sys.argv[3:])
     if len(sys.argv) in {4, 5} and sys.argv[1] == "--watch-parent":
         try:

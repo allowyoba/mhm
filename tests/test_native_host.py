@@ -768,5 +768,33 @@ class SubscriptionCertificateTests(HostTest):
         self.assertEqual(context.call_args_list[1].args, (None,))
 
 
+class ContainmentTests(HostTest):
+    def test_failed_watchdog_does_not_leave_an_unprotected_connection(self):
+        for platform, os_name in (("darwin", "posix"), ("win32", "nt")):
+            with self.subTest(platform=platform):
+                client = nh.MihomoProcess()
+                client.directory = self.base
+                process = mock.Mock(pid=1234)
+                process.poll.return_value = None
+                try:
+                    with mock.patch.object(
+                        nh.sys, "platform", platform
+                    ), mock.patch.object(nh.os, "name", os_name), mock.patch.object(
+                        nh.subprocess, "Popen", return_value=process
+                    ), mock.patch.object(
+                        nh, "WindowsKillJob", side_effect=OSError("job denied")
+                    ), mock.patch.object(
+                        client, "_start_windows_watchdog"
+                    ), mock.patch.object(
+                        client, "_start_macos_watchdog"
+                    ):
+                        with self.assertRaisesRegex(
+                            nh.HostError, "shutdown protection"
+                        ):
+                            client._spawn_process("mihomo")
+                finally:
+                    nh.SESSION.release(process)
+
+
 if __name__ == "__main__":
     unittest.main()

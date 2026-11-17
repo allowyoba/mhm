@@ -11,6 +11,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "native-host"))
@@ -34,6 +35,17 @@ class SessionTests(unittest.TestCase):
             spawn()
         self.assertEqual(calls, [])
         session.close()
+
+    def test_linux_refuses_to_start_without_parent_death_protection(self):
+        from mhm.platforms import _linux_child_setup
+
+        libc = mock.Mock()
+        libc.prctl.return_value = -1
+        with mock.patch("mhm.platforms.os.setsid"), mock.patch(
+            "mhm.platforms.ctypes.CDLL", return_value=libc
+        ):
+            with self.assertRaises(OSError):
+                _linux_child_setup(1234)
 
     @unittest.skipUnless(ENGINE.exists(), "mihomo required")
     def test_native_eof_kills_main_and_temporary_core_before_worker_finishes(self):
