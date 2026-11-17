@@ -144,9 +144,13 @@ async function refresh() {
   broadcast();
   return result;
 }
-async function connect(profileId) {
+async function connect(profileId, generation = sessionGeneration) {
   await checkProxyPermission();
-  const generation = sessionGeneration;
+  if (sessionClosing || generation !== sessionGeneration) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    throw error;
+  }
   state = { ...state, status: "connecting" };
   broadcast();
   try {
@@ -184,9 +188,11 @@ async function connect(profileId) {
     if (sessionClosing || generation !== sessionGeneration) throw error;
     if (current?.status === "connected") {
       await setBrowserProxy(current.localPort);
+      if (sessionClosing || generation !== sessionGeneration) throw error;
       state = current;
     } else {
       await setBrowserProxy(preferences.killSwitch ? 9 : null);
+      if (sessionClosing || generation !== sessionGeneration) throw error;
       state = {
         status: preferences.killSwitch ? "blocked" : "disconnected",
         profileId: null,
@@ -230,13 +236,13 @@ const allowed = new Set([
   "profileRules",
 ]);
 async function dispatch(message) {
+  const generation = sessionGeneration;
   await ready;
-  if (sessionClosing) {
+  if (sessionClosing || generation !== sessionGeneration) {
     const error = new Error("The browser session has ended.");
     error.code = "SESSION_CLOSED";
     throw error;
   }
-  const generation = sessionGeneration;
   const { action, ...payload } = message;
   if (action === "initialize") {
     const result = await refresh();
@@ -268,7 +274,8 @@ async function dispatch(message) {
     broadcast();
   }
   try {
-    if (action === "connect") return await connect(payload.profileId);
+    if (action === "connect")
+      return await connect(payload.profileId, generation);
     if (action === "disconnect") {
       await disconnect();
       return {};
