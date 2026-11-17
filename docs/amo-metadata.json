@@ -12,7 +12,7 @@
     "en-US": "Manage mihomo profiles, subscriptions and browser proxy connections with encrypted local storage."
   },
   "description": {
-    "en-US": "mhm manages mihomo YAML profiles and subscriptions, browser proxy connections, traffic statistics, local traffic budgets and custom routing rules. Requires the separate mhm native host for Windows, macOS or Linux. Install it from the GitHub releases and follow the setup screen. WireGuard is used only for subscription downloads; it is not a system VPN. No developer analytics or telemetry."
+    "en-US": "mhm manages mihomo YAML profiles and subscriptions, browser proxy connections, traffic statistics, local traffic budgets and custom routing rules. Requires the separate mhm native host for Windows, macOS or Linux. Install it from the GitHub releases and follow the setup screen. WireGuard is used only for subscription downloads; it is not a system VPN. No developer analytics or telemetry.\n\nProject and source code: https://github.com/allowyoba/mhm\nNative host downloads: https://github.com/allowyoba/mhm/releases\nSetup instructions: https://github.com/allowyoba/mhm#install"
   },
   "homepage": {
     "en-US": "https://github.com/allowyoba/mhm"

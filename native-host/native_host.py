@@ -45,6 +45,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mhm.version import VERSION
 from mhm.errors import HostError
+from mhm.session import BrowserSession
 from mhm.files import app_data_dir, ensure_private_parent, write_private_text
 from mhm.config import (
     RealityProfile,
@@ -76,6 +77,8 @@ from mhm.policy import (
     normalize_custom_rules,
     with_custom_rules,
     profile_revision,
+    normalize_excluded_subnets,
+    with_subnet_exclusions,
 )
 
 from mhm import transport
@@ -99,6 +102,8 @@ HOST_CAPABILITIES = (
     "subscriptionCertificates",
     "trafficLimits",
     "customRules",
+    "subnetExclusions",
+    "browserSessionShutdown",
     "groups",
 )
 
@@ -192,7 +197,12 @@ def log_event(message: str) -> None:
 
 
 class SettingsStore:
-    DEFAULTS = {"mihomoPath": "", "localPort": DEFAULT_PORT, "autoPort": True}
+    DEFAULTS = {
+        "mihomoPath": "",
+        "localPort": DEFAULT_PORT,
+        "autoPort": True,
+        "excludedSubnets": [],
+    }
 
     def load(self) -> dict[str, Any]:
         data: dict[str, Any] = {}
@@ -212,6 +222,9 @@ class SettingsStore:
             merged["localPort"] = DEFAULT_PORT
         merged["mihomoPath"] = str(merged.get("mihomoPath") or "").strip()
         merged["autoPort"] = bool(merged.get("autoPort", True))
+        merged["excludedSubnets"] = normalize_excluded_subnets(
+            merged.get("excludedSubnets", [])
+        )
         try:
             merged["trafficPolicy"] = normalize_traffic_policy(
                 merged.get("trafficPolicy", {})
@@ -222,6 +235,10 @@ class SettingsStore:
 
     def save(self, patch: dict[str, Any]) -> dict[str, Any]:
         current = self.load()
+        if "excludedSubnets" in patch:
+            current["excludedSubnets"] = normalize_excluded_subnets(
+                patch["excludedSubnets"]
+            )
         if "mihomoPath" in patch:
             path = str(patch.get("mihomoPath") or "").strip()
             if path:
@@ -401,6 +418,9 @@ def _windows_watch_parent(
     return 0
 
 
+SESSION = BrowserSession()
+
+
 class ManagedCoreProcess:
     def __init__(self) -> None:
         self.process: subprocess.Popen[bytes] | None = None
@@ -564,6 +584,7 @@ class ManagedCoreProcess:
                 log_event(f"traffic db finalize failed: {exc}")
             self.session_id = None
 
+    @SESSION.guard_spawn
     def _spawn_process(self, binary: str) -> subprocess.Popen[bytes]:
         command = [binary, "-d", str(self.directory), "-f", str(self.config_path)]
         kwargs: dict[str, Any] = {
@@ -574,11 +595,15 @@ class ManagedCoreProcess:
         if os.name == "nt":
             kwargs["creationflags"] = getattr(subprocess, "CREATE_NO_WINDOW", 0)
         elif sys.platform.startswith("linux"):
-            parent_pid = os.getpid()
-            kwargs["preexec_fn"] = lambda: _linux_child_setup(parent_pid)
+            launcher = [sys.executable]
+            if not getattr(sys, "frozen", False):
+                launcher.append(str(Path(__file__).resolve()))
+            command = launcher + ["--run-core", str(os.getpid()), *command]
         else:
             kwargs["start_new_session"] = True
         process = subprocess.Popen(command, **kwargs)
+        self.process = process
+        SESSION.track(process)
 
         if os.name == "nt":
             job = None
@@ -732,6 +757,8 @@ class ManagedCoreProcess:
             except Exception:
                 pass
 
+        if proc and proc.poll() is not None:
+            SESSION.release(proc)
         self._stop_macos_watchdog()
         self._stop_windows_watchdog()
         if self._job:
@@ -863,6 +890,7 @@ def security_info() -> dict[str, Any]:
 
 
 def validate_mihomo(document: dict[str, Any], profile_id: str) -> None:
+    SESSION.require_open()
     import yaml
 
     binary = find_mihomo()
@@ -902,6 +930,7 @@ class MihomoProcess(ManagedCoreProcess):
         self.revision = None
         self.mode = "rule"
         self._document = None
+        self._excluded_subnets = []
 
     def restore_resources(self, profile_id):
         import zipfile
@@ -990,10 +1019,15 @@ class MihomoProcess(ManagedCoreProcess):
 
     @core_operation
     def start_document(
-        self, document: dict[str, Any], profile_id: str | None = None, revision=None
+        self,
+        document: dict[str, Any],
+        profile_id: str | None = None,
+        revision=None,
+        mode=None,
     ) -> dict[str, Any]:
         import yaml
 
+        SESSION.require_open()
         if self.running():
             self.stop()
         try:
@@ -1016,8 +1050,10 @@ class MihomoProcess(ManagedCoreProcess):
                 self.api_secret,
             )
             saved = PROFILES.bundle(profile_id) if profile_id else {}
-            config["mode"] = saved.get("mode", config.get("mode", "rule"))
+            config["mode"] = mode or saved.get("mode", config.get("mode", "rule"))
             self.mode = config["mode"]
+            self._excluded_subnets = settings["excludedSubnets"] if profile_id else []
+            config = with_subnet_exclusions(config, self._excluded_subnets)
             fd, path = tempfile.mkstemp(
                 prefix="runtime-", suffix=".yaml", dir=self.directory
             )
@@ -1081,6 +1117,7 @@ class MihomoProcess(ManagedCoreProcess):
             self.running()
             and self.profile_id == profile_id
             and self.revision == meta.get("revision")
+            and self._excluded_subnets == SETTINGS.load()["excludedSubnets"]
         ):
             return self.status()
         self.stop_reason = None
@@ -1096,6 +1133,24 @@ class MihomoProcess(ManagedCoreProcess):
                 with contextlib.suppress(Exception):
                     self.start_document(*previous)
             raise exc
+
+    @core_operation
+    def set_mode(self, mode):
+        if not self.running() or not self.profile_id:
+            raise HostError("Connect a profile first", "CONFLICT")
+        if self._excluded_subnets:
+            previous = (self._document, self.profile_id, self.revision, self.mode)
+            try:
+                self.start_document(
+                    self._document, self.profile_id, self.revision, mode
+                )
+            except Exception:
+                with contextlib.suppress(Exception):
+                    self.start_document(*previous)
+                raise
+        else:
+            self.api("PATCH", "/configs", {"mode": mode})
+            self.mode = mode
 
     def restart(self):
         if not self.profile_id:
@@ -1162,6 +1217,7 @@ def fetch_mihomo_subscription(
 ) -> tuple[str, dict | None]:
     import yaml
 
+    SESSION.require_open()
     temporary = None
     try:
         proxy_port = None
@@ -1187,6 +1243,7 @@ def fetch_mihomo_subscription(
                 "caCertificate": bundle.get("caCertificate", ""),
             },
         )
+        SESSION.require_open()
         text = body.decode("utf-8-sig")
         profile_document(text)
         usage = {}
@@ -1326,6 +1383,7 @@ def handle_mihomo(message: dict[str, Any]) -> dict[str, Any]:
             "status": CLIENT.status(),
             "security": security_info(),
             "capabilities": list(HOST_CAPABILITIES),
+            "settings": SETTINGS.load(),
         }
     if command == "saveMihomoProfile":
         return {"profile": PROFILES.save_source(message), "profiles": PROFILES.list()}
@@ -1361,8 +1419,7 @@ def handle_mihomo(message: dict[str, Any]) -> dict[str, Any]:
         mode = message.get("mode")
         if mode not in {"rule", "global", "direct"}:
             raise HostError("Invalid mode")
-        CLIENT.api("PATCH", "/configs", {"mode": mode})
-        CLIENT.mode = mode
+        CLIENT.set_mode(mode)
         bundle = PROFILES.bundle(CLIENT.profile_id)
         bundle["mode"] = mode
         PROFILES.commit(CLIENT.profile_id, PROFILES.get_meta(CLIENT.profile_id), bundle)
@@ -1401,7 +1458,7 @@ def handle_mihomo(message: dict[str, Any]) -> dict[str, Any]:
             "settings": SETTINGS.save(
                 {
                     k: message[k]
-                    for k in ("mihomoPath", "localPort", "autoPort")
+                    for k in ("mihomoPath", "localPort", "autoPort", "excludedSubnets")
                     if k in message
                 }
             )
@@ -1521,6 +1578,13 @@ def configure_binary_stdio_on_windows() -> None:
 
 
 def main() -> int:
+    if (
+        sys.platform.startswith("linux")
+        and len(sys.argv) >= 5
+        and sys.argv[1] == "--run-core"
+    ):
+        _linux_child_setup(int(sys.argv[2]))
+        os.execv(sys.argv[3], sys.argv[3:])
     if len(sys.argv) in {4, 5} and sys.argv[1] == "--watch-parent":
         try:
             return _windows_watch_parent(
@@ -1554,7 +1618,13 @@ def main() -> int:
         max_workers=1, thread_name_prefix="mhm-operations"
     )
 
+    fast_executor = concurrent.futures.ThreadPoolExecutor(
+        max_workers=1, thread_name_prefix="mhm-status"
+    )
+
     def respond(message):
+        if SESSION.closed.is_set():
+            return
         request_id = message.get("requestId")
         try:
             result = handle(message)
@@ -1605,14 +1675,16 @@ def main() -> int:
             if message is None:
                 return 0
             if message.get("command") in {"status", "trafficStats", "disconnect"}:
-                respond(message)
+                fast_executor.submit(respond, message)
             else:
                 executor.submit(respond, message)
     except HostError:
         log_event("invalid native messaging frame")
         return 2
     finally:
-        executor.shutdown(wait=True, cancel_futures=True)
+        SESSION.close()
+        executor.shutdown(wait=False, cancel_futures=True)
+        fast_executor.shutdown(wait=False, cancel_futures=True)
         CLIENT.stop()
         log_event("host cleanup complete")
 

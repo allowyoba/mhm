@@ -288,7 +288,7 @@
     "message": "请解锁操作系统的安全存储并安装配套应用。"
   },
   "companionUpdateRequired": {
-    "message": "请安装或更新配套应用至 mhm 0.1.1。"
+    "message": "请安装或更新配套应用至 mhm 0.1.2。"
   },
   "secureStorage": {
     "message": "加密存储"
@@ -580,5 +580,17 @@
   },
   "manageLimit": {
     "message": "管理流量限额"
+  },
+  "firefoxProxyPermission": {
+    "message": "Firefox 需要隐私窗口访问权限才能控制代理。打开附加组件，选择 mhm 并允许在隐私窗口中运行。无需开启调试。"
+  },
+  "excludedSubnets": {
+    "message": "不使用代理的子网"
+  },
+  "excludedSubnetsHint": {
+    "message": "每行一个 IPv4 或 IPv6 子网。所有配置和模式下，匹配的目标均直连。保存后将重新连接当前配置。"
+  },
+  "saveAndApply": {
+    "message": "保存并应用"
   }
 }

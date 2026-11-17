@@ -19,7 +19,7 @@ mhm controls the browser proxy. It does not provide a system VPN. WireGuard is a
 
 Download the extension and native installer for your platform from [Releases](https://github.com/allowyoba/mhm/releases).
 
-For Chrome, Edge and Opera, extract the browser ZIP and load the directory in developer mode at `chrome://extensions`, `edge://extensions` or `opera://extensions`. Firefox requires a Mozilla-signed extension for permanent installation. The initial version has been submitted to [Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/mhm/) and is awaiting review. An unsigned XPI can only be loaded temporarily through `about:debugging`.
+For Chrome, Edge and Opera, extract the browser ZIP and load the directory in developer mode at `chrome://extensions`, `edge://extensions` or `opera://extensions`. Firefox requires a Mozilla-signed extension for permanent installation. Install the signed Firefox extension from [Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/mhm/). New versions appear there after Mozilla review. Debugging and signature-verification changes are not required. An unsigned XPI can only be loaded temporarily through `about:debugging`.
 
 Open mhm and follow the setup screen. It checks the native component and provides a command for your browser, OS, architecture and extension ID.
 
@@ -28,14 +28,14 @@ Open mhm and follow the setup screen. It checks the native component and provide
 Run the downloaded installer from its directory. For Apple Silicon:
 
 ```sh
-chmod +x ./mhm-setup-0.1.1-macos-arm64
-./mhm-setup-0.1.1-macos-arm64 install --browser chrome --extension-id YOUR_EXTENSION_ID
+chmod +x ./mhm-setup-0.1.2-macos-arm64
+./mhm-setup-0.1.2-macos-arm64 install --browser chrome --extension-id YOUR_EXTENSION_ID
 ```
 
 For Windows, use PowerShell:
 
 ```powershell
-.\mhm-setup-0.1.1-windows-amd64.exe install --browser edge --extension-id YOUR_EXTENSION_ID
+.\mhm-setup-0.1.2-windows-amd64.exe install --browser edge --extension-id YOUR_EXTENSION_ID
 ```
 
 The standalone installer includes Python and the native host. It downloads an official stable mihomo build and verifies its SHA-256 digest. To use an existing binary, pass `--mihomo PATH`. Firefox uses `--browser firefox --extension-id mhm@allowyoba.github.io`.
@@ -45,7 +45,7 @@ Windows binaries are not Authenticode-signed. macOS binaries are not notarized.
 ### Linux
 
 ```sh
-sudo apt install ./mhm_0.1.1_amd64.deb
+sudo apt install ./mhm_0.1.2_amd64.deb
 mhm-setup install --browser edge --extension-id YOUR_EXTENSION_ID
 ```
 
@@ -58,6 +58,20 @@ Encrypted storage requires an unlocked Secret Service provider, such as GNOME Ke
 Add a subscription URL or a self-contained mihomo YAML profile, select it and connect. The Connection view includes routing mode, proxy groups and latency checks. The toolbar icon shows connected, connecting, disconnected or blocked states. Its tooltip includes the active profile name.
 
 Profiles preserve YAML groups, DNS, rules and HTTPS/inline providers. Node-only subscriptions receive a selection group and a final routing rule. Subscription updates can run manually or every 6, 12 or 24 hours while the browser is running. Updates are validated before saving; a failed download leaves the working profile intact. Apply a new revision to reconnect, or roll back to the previous revision.
+
+### Browser sessions
+
+Closing the last normal or popup browser window stops the connection, even if the browser continues running in the background. Closing the extension popup alone keeps it running. A new browser session starts disconnected. Unexpected connection failures while a window remains open still follow the traffic-protection setting.
+
+The native host kills its active mihomo processes when the Native Messaging channel closes, before waiting for pending operations. The same ownership applies to temporary WireGuard subscription cores. Windows Job Objects/watchers, a macOS watcher and Linux parent-death signals contain processes if the host crashes.
+
+Firefox requires mhm to be allowed to run in private windows before its proxy API can be used. Open `about:addons`, select mhm and allow **Run in Private Windows**. Saving profiles does not require this permission.
+
+### Excluded subnets
+
+In Settings, enter one IPv4 or IPv6 network per line, for example `192.168.8.0/24` and `fd00::/8`. Save and apply validates and normalizes the entries, then reconnects an active profile. Invalid input leaves the saved list unchanged.
+
+Matching destinations go directly in every profile, including global mode. Exclusions run before custom and subscription rules and survive subscription updates. An empty list removes them. Literal IP destinations also use the browser bypass list while traffic protection is active; hostname matching while connected uses mihomo and the profile's DNS. Temporary WireGuard subscription routes are independent of these browser-traffic exclusions.
 
 ### Traffic and limits
 
@@ -118,7 +132,7 @@ The native host separates configuration, profiles, encrypted storage, network tr
 
 ### Releases
 
-CI tests and builds Windows amd64, macOS arm64/amd64 and Linux arm64/amd64, then packages all four browser extensions and runs `web-ext lint`. A tag such as `0.1.1` must exactly match `product.json`. Successful tag builds publish a GitHub Release with packages and `SHA256SUMS`.
+CI tests and builds Windows amd64, macOS arm64/amd64 and Linux arm64/amd64, then packages all four browser extensions and runs `web-ext lint`. A tag such as `0.1.2` must exactly match `product.json`. Successful tag builds publish a GitHub Release with packages and `SHA256SUMS`.
 
 
 The separate `Submit Firefox to Mozilla` workflow uses repository secrets `AMO_JWT_ISSUER` and `AMO_JWT_SECRET`. Initial submission can also use `python3 scripts/sign_firefox.py --env-file .env`. Do not resubmit an existing version. Mozilla review and signing are separate from GitHub publication; the generated Firefox package remains unsigned until a signed file is attached separately.
@@ -126,7 +140,7 @@ The separate `Submit Firefox to Mozilla` workflow uses repository secrets `AMO_J
 APT archives are not a hosted service. To prepare a signed repository on Linux:
 
 ```sh
-python scripts/build_apt_repository.py dist/mhm_0.1.1_amd64.deb --output dist/apt --signing-key YOUR_GPG_KEY_ID
+python scripts/build_apt_repository.py dist/mhm_0.1.2_amd64.deb --output dist/apt --signing-key YOUR_GPG_KEY_ID
 ```
 
 This creates Packages, Release, InRelease, Release.gpg and an exported public key. Host the output over HTTPS and configure clients with `signed-by`. Without a signing key, the script generates unsigned local metadata. Installing a local deb with `apt install ./file.deb` does not require your own repository.

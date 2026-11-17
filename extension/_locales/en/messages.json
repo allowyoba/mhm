@@ -288,7 +288,7 @@
     "message": "Unlock your OS secure storage and install the companion app."
   },
   "companionUpdateRequired": {
-    "message": "Install or update the companion app to mhm 0.1.1."
+    "message": "Install or update the companion app to mhm 0.1.2."
   },
   "secureStorage": {
     "message": "Encrypted storage"
@@ -580,5 +580,17 @@
   },
   "manageLimit": {
     "message": "Manage traffic limit"
+  },
+  "firefoxProxyPermission": {
+    "message": "Firefox requires private-window access to control the proxy. Open Add-ons, select mhm, and allow “Run in Private Windows”. Debugging is not required."
+  },
+  "excludedSubnets": {
+    "message": "Excluded subnets"
+  },
+  "excludedSubnetsHint": {
+    "message": "One IPv4 or IPv6 subnet per line. Matching destinations use a direct connection in every profile and mode. Saving reconnects the active profile."
+  },
+  "saveAndApply": {
+    "message": "Save and apply"
   }
 }

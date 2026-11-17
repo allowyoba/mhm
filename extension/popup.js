@@ -98,7 +98,8 @@ async function run(work, success = "") {
     await work();
     notice(success);
   } catch (error) {
-    notice(error.message, true);
+    if (error.inline) notice();
+    else notice(error.message, true);
   } finally {
     localBusy = false;
     busy = Boolean(remoteOperation);
@@ -248,7 +249,7 @@ function render() {
     ),
   );
   $("mode").value = state.mode || "rule";
-  $("mode").disabled = busy;
+  $("mode").disabled = busy || !connected;
   rulesView.sync(profiles, state);
   $("addProfile").disabled = busy;
   $("profileActions")
@@ -483,7 +484,9 @@ async function initialize() {
       !ping.capabilities?.includes("mihomoProfiles") ||
       !ping.capabilities?.includes("subscriptionCertificates") ||
       !ping.capabilities?.includes("trafficLimits") ||
-      !ping.capabilities?.includes("customRules")
+      !ping.capabilities?.includes("customRules") ||
+      !ping.capabilities?.includes("subnetExclusions") ||
+      !ping.capabilities?.includes("browserSessionShutdown")
     ) {
       navigate("onboardingView");
       $("setupDetail").textContent = t(
@@ -502,6 +505,9 @@ async function initialize() {
     $("theme").value = preferences.theme || "system";
     $("killSwitch").checked = preferences.killSwitch !== false;
     $("mihomoPath").value = ping.settings?.mihomoPath || "";
+    $("excludedSubnets").value = (ping.settings?.excludedSubnets || []).join(
+      "\n",
+    );
     $("storageStatus").textContent =
       `${t("secureStorage")} · ${ping.security.backend}`;
     remoteOperation = result.operation;
@@ -807,3 +813,28 @@ window.addEventListener("beforeunload", clearSecrets);
     }
   }, 2000);
 })();
+
+$("saveExcludedSubnets").addEventListener("click", () =>
+  run(async () => {
+    const errorBox = $("excludedSubnetsError");
+    errorBox.classList.add("hidden");
+    $("excludedSubnets").removeAttribute("aria-invalid");
+    try {
+      const excludedSubnets = $("excludedSubnets")
+        .value.split(/[\s,;]+/)
+        .filter(Boolean);
+      const result = await send("saveSettings", { excludedSubnets });
+      $("excludedSubnets").value = result.settings.excludedSubnets.join("\n");
+      if (state.status === "connected")
+        state = await send("connect", { profileId: state.profileId });
+    } catch (error) {
+      errorBox.textContent = error.message;
+      errorBox.classList.remove("hidden");
+      if (error.code === "INVALID_VALUE")
+        $("excludedSubnets").setAttribute("aria-invalid", "true");
+      $("excludedSubnets").focus();
+      error.inline = true;
+      throw error;
+    }
+  }, t("saved")),
+);

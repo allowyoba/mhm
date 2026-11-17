@@ -710,6 +710,36 @@
               Local addresses remain accessible. Press Disconnect to restore
               your usual connection.
             </p>
+            <label for="excludedSubnets" data-i18n="excludedSubnets"
+              >Excluded subnets</label
+            >
+            <textarea
+              id="excludedSubnets"
+              rows="4"
+              spellcheck="false"
+              placeholder="192.168.0.0/16&#10;fd00::/8"
+              aria-describedby="excludedSubnetsHint excludedSubnetsError"
+            ></textarea>
+            <p
+              id="excludedSubnetsHint"
+              class="muted small"
+              data-i18n="excludedSubnetsHint"
+            >
+              One IPv4 or IPv6 subnet per line. Matching destinations use a
+              direct connection in every profile and mode.
+            </p>
+            <p
+              id="excludedSubnetsError"
+              class="error small hidden"
+              role="alert"
+            ></p>
+            <button
+              id="saveExcludedSubnets"
+              class="secondary full"
+              data-i18n="saveAndApply"
+            >
+              Save and apply
+            </button>
             <details>
               <summary data-i18n="companionSettings">Companion app</summary>
               <label for="mihomoPath" data-i18n="mihomoPath"

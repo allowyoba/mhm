@@ -34,7 +34,7 @@ class ExtensionContractTests(unittest.TestCase):
 
     def test_mhm_brand_and_packaged_files(self):
         manifest = json.loads((EXT / "manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["version"], "0.1.1")
+        self.assertEqual(manifest["version"], json.loads((ROOT / "product.json").read_text())["version"])
         self.assertEqual(manifest["action"]["default_popup"], "popup.html?popup=1")
         self.assertEqual(
             json.loads((EXT / "_locales/en/messages.json").read_text(encoding="utf-8"))["appName"][

@@ -6,6 +6,7 @@ import copy
 import datetime as dt
 import hashlib
 import json
+import ipaddress
 from .errors import HostError
 
 DEFAULT_TRAFFIC_POLICY = {
@@ -109,3 +110,36 @@ def profile_revision(bundle):
     if rules:
         text += "\0" + json.dumps(rules, ensure_ascii=False, separators=(",", ":"))
     return hashlib.sha256(text.encode()).hexdigest()
+
+
+def normalize_excluded_subnets(value):
+    if not isinstance(value, list) or len(value) > 256:
+        raise HostError("Enter up to 256 IPv4 or IPv6 subnets")
+    result = []
+    for item in value:
+        if not isinstance(item, str) or len(item) > 64 or "%" in item:
+            raise HostError("Enter a valid IPv4 or IPv6 subnet")
+        try:
+            network = str(ipaddress.ip_network(item.strip(), strict=False))
+        except ValueError as exc:
+            raise HostError(f"Invalid subnet: {item}") from exc
+        if network not in result:
+            result.append(network)
+    return result
+
+
+def with_subnet_exclusions(config, subnets):
+    subnets = normalize_excluded_subnets(subnets)
+    result = copy.deepcopy(config)
+    if not subnets or result.get("mode", "rule") == "direct":
+        return result
+    rules = [
+        f'{"IP-CIDR6" if ":" in subnet else "IP-CIDR"},{subnet},DIRECT'
+        for subnet in subnets
+    ]
+    if result.get("mode") == "global":
+        result["mode"] = "rule"
+        result["rules"] = rules + ["MATCH,GLOBAL"]
+    else:
+        result["rules"] = rules + result.get("rules", [])
+    return result
