@@ -41,9 +41,9 @@ class SessionTests(unittest.TestCase):
 
         libc = mock.Mock()
         libc.prctl.return_value = -1
-        with mock.patch("mhm.platforms.os.setsid", create=True), mock.patch(
-            "mhm.platforms.ctypes.CDLL", return_value=libc
-        ):
+        with mock.patch("mhm.platforms.signal.SIGKILL", 9, create=True), mock.patch(
+            "mhm.platforms.os.setsid", create=True
+        ), mock.patch("mhm.platforms.ctypes.CDLL", return_value=libc):
             with self.assertRaises(OSError):
                 _linux_child_setup(1234)
 
