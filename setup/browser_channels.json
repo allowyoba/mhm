@@ -8,8 +8,8 @@
     "store_url": ""
   },
   "firefox": {
-    "store_id": "",
-    "store_url": ""
+    "store_id": "mhm@allowyoba.github.io",
+    "store_url": "https://addons.mozilla.org/firefox/addon/mhm/"
   },
   "edge": {
     "store_id": "",

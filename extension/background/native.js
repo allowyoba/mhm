@@ -37,6 +37,18 @@ class MhmNativeClient {
       this.onDisconnect(reason);
     });
   }
+  close() {
+    const port = this.port;
+    this.port = null;
+    for (const item of this.pending.values()) {
+      clearTimeout(item.timer);
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      item.reject(error);
+    }
+    this.pending.clear();
+    if (port) port.disconnect();
+  }
   request(command, payload = {}, timeout = 90000) {
     if (!this.port) this.open();
     return new Promise((resolve, reject) => {

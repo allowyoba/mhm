@@ -1,9 +1,7 @@
-First mhm release: mihomo profiles and subscriptions, encrypted local storage, WireGuard subscription updates, traffic statistics and budgets, custom routing rules and toolbar connection status.
+mhm 0.1.2 adds IPv4/IPv6 subnet exclusions shared by all profiles. Matching traffic goes directly, including in global mode. Save and apply validates CIDR entries and reconnects the active profile.
 
-Extensions: Chrome, Edge, Firefox and Opera. Native host: Windows amd64, macOS arm64/amd64 and Linux amd64/arm64. Linux downloads include deb packages and local APT repository archives.
+Closing the last browser window or losing the Native Messaging channel now stops the main core and temporary WireGuard cores. Pending requests cannot restart a core after the browser session ends. Host-crash containment is covered by lifecycle regression tests.
 
-Chrome, Edge and Opera: extract the ZIP and load the extension in developer mode. The generated Firefox XPI is unsigned; stable Firefox requires the Mozilla-signed version after approval. Mozilla submission and review are separate from this GitHub release.
+Firefox profile creation works without debugging. Proxy connections explain the required private-window permission before starting a core. Install the signed extension from Mozilla Add-ons; new version approval is separate from GitHub publication. Update the companion app together with the extension to use the new lifecycle and subnet features.
 
-Windows binaries are not Authenticode-signed. macOS binaries are not notarized. APT archives contain unsigned metadata and are not a hosted APT service. See the README for installation and network limitations.
-
-SHA256SUMS covers the attached packages. GitHub source archives refer to the release tag.
+Downloads include Chrome, Edge, Firefox and Opera packages, Windows amd64, macOS amd64/arm64 and Linux amd64/arm64 installers, deb packages and local APT repository archives. Generated Firefox XPI files are unsigned until Mozilla signs them. Windows signing and macOS notarization are not configured. SHA256SUMS covers all attached files.

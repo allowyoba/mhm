@@ -9,6 +9,9 @@ if (typeof importScripts === "function")
 const HOST = MHM_NATIVE_HOST;
 const toolbar = new MhmToolbar();
 let operation = null;
+let sessionClosing = false;
+let sessionGeneration = 0;
+let windowGeneration = 0;
 let state = { status: "disconnected", profileId: null };
 let profiles = [];
 let selectedProfileId = null;
@@ -28,10 +31,17 @@ const native = new MhmNativeClient(HOST, () => {
   }
 });
 const ready = chrome.storage.local
-  .get(["mhmPreferences", "selectedProfileId", "mhmConnection"])
+  .get([
+    "mhmPreferences",
+    "selectedProfileId",
+    "mhmConnection",
+    "mhmProxyExclusions",
+  ])
   .then(async (stored) => {
     preferences = { ...preferences, ...stored.mhmPreferences };
+    setProxyExclusions(stored.mhmProxyExclusions || []);
     selectedProfileId = stored.selectedProfileId || null;
+    if (sessionClosing) return;
     if (stored.mhmConnection?.active) {
       state = {
         status:
@@ -42,9 +52,14 @@ const ready = chrome.storage.local
               : "disconnected",
         profileId: null,
       };
-      await setBrowserProxy(
-        state.status === "limited" || preferences.killSwitch ? 9 : null,
-      );
+      try {
+        await setBrowserProxy(
+          state.status === "limited" || preferences.killSwitch ? 9 : null,
+        );
+      } catch (error) {
+        if (error.code !== "FIREFOX_PRIVATE_ACCESS") throw error;
+        state = { status: "disconnected", profileId: null };
+      }
     }
     toolbar.update(state, profiles);
   });
@@ -71,7 +86,24 @@ function broadcast() {
     })
     .catch(() => {});
 }
-function nativeRequest(command, payload = {}, timeout = 90000) {
+async function nativeRequest(command, payload = {}, timeout = 90000) {
+  if (sessionClosing) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    return Promise.reject(error);
+  }
+  const generation = sessionGeneration;
+  if (!native.port && chrome.windows) {
+    const windows = await chrome.windows.getAll({
+      windowTypes: ["normal", "popup"],
+    });
+    if (!windows.length) sessionClosing = true;
+  }
+  if (sessionClosing || generation !== sessionGeneration) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    throw error;
+  }
   return native.request(command, payload, timeout);
 }
 
@@ -92,6 +124,11 @@ async function protectStoppedConnection(result) {
 async function refresh() {
   const result = await nativeRequest("bootstrap");
   profiles = result.profiles || [];
+  setProxyExclusions(result.settings?.excludedSubnets || []);
+  if (result.settings)
+    await chrome.storage.local.set({
+      mhmProxyExclusions: result.settings.excludedSubnets || [],
+    });
   const protectedDisconnect =
     ["blocked", "limited"].includes(state.status) &&
     result.status.status === "disconnected";
@@ -107,18 +144,40 @@ async function refresh() {
   broadcast();
   return result;
 }
-async function connect(profileId) {
+async function connect(profileId, generation = sessionGeneration) {
+  await checkProxyPermission();
+  if (sessionClosing || generation !== sessionGeneration) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    throw error;
+  }
   state = { ...state, status: "connecting" };
   broadcast();
   try {
     if (preferences.killSwitch) await setBrowserProxy(9);
     const result = await nativeRequest("connect", { profileId });
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     await setBrowserProxy(result.localPort);
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     state = result;
     selectedProfileId = profileId;
     await chrome.storage.local.set({ selectedProfileId });
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     return result;
   } catch (error) {
+    if (sessionClosing || generation !== sessionGeneration) throw error;
     if (error.code === "TRAFFIC_LIMIT") {
       await setBrowserProxy(9);
       state = { status: "limited", profileId: null };
@@ -126,11 +185,14 @@ async function connect(profileId) {
     }
     // A failed candidate can leave the prior core running after native rollback.
     const current = await nativeRequest("status", {}, 5000).catch(() => null);
+    if (sessionClosing || generation !== sessionGeneration) throw error;
     if (current?.status === "connected") {
       await setBrowserProxy(current.localPort);
+      if (sessionClosing || generation !== sessionGeneration) throw error;
       state = current;
     } else {
       await setBrowserProxy(preferences.killSwitch ? 9 : null);
+      if (sessionClosing || generation !== sessionGeneration) throw error;
       state = {
         status: preferences.killSwitch ? "blocked" : "disconnected",
         profileId: null,
@@ -174,7 +236,13 @@ const allowed = new Set([
   "profileRules",
 ]);
 async function dispatch(message) {
+  const generation = sessionGeneration;
   await ready;
+  if (sessionClosing || generation !== sessionGeneration) {
+    const error = new Error("The browser session has ended.");
+    error.code = "SESSION_CLOSED";
+    throw error;
+  }
   const { action, ...payload } = message;
   if (action === "initialize") {
     const result = await refresh();
@@ -206,14 +274,33 @@ async function dispatch(message) {
     broadcast();
   }
   try {
-    if (action === "connect") return await connect(payload.profileId);
+    if (action === "connect")
+      return await connect(payload.profileId, generation);
     if (action === "disconnect") {
       await disconnect();
       return {};
     }
     const response = await nativeRequest(action, payload);
+    if (sessionClosing || generation !== sessionGeneration) {
+      const error = new Error("The browser session has ended.");
+      error.code = "SESSION_CLOSED";
+      throw error;
+    }
     if (response.profiles) profiles = response.profiles;
-    if (action === "setMode") state = response;
+    if (response.settings) {
+      setProxyExclusions(response.settings.excludedSubnets || []);
+      await chrome.storage.local.set({
+        mhmProxyExclusions: response.settings.excludedSubnets || [],
+      });
+      if (["connected", "blocked", "limited"].includes(state.status))
+        await setBrowserProxy(
+          state.status === "connected" ? state.localPort : 9,
+        );
+    }
+    if (action === "setMode") {
+      state = response;
+      if (state.status === "connected") await setBrowserProxy(state.localPort);
+    }
     const budget = response.budget || response.traffic?.budget;
     if (budget && state.status === "limited" && !budget.blocked) {
       // Keep traffic protected until the user reconnects or disconnects.
@@ -290,3 +377,38 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 chrome.alarms.create("connection-health", { periodInMinutes: 0.5 });
 
 chrome.alarms.create("profile-updates", { periodInMinutes: 30 });
+
+async function endBrowserSession() {
+  sessionClosing = true;
+  sessionGeneration += 1;
+  native.close();
+  state = { status: "disconnected", profileId: null };
+  operation = null;
+  await setBrowserProxy(null).catch(() => {});
+  broadcast();
+}
+if (chrome.windows) {
+  chrome.windows.onRemoved.addListener(async () => {
+    const generation = windowGeneration;
+    try {
+      const windows = await chrome.windows.getAll({
+        windowTypes: ["normal", "popup"],
+      });
+      if (!windows.length && generation === windowGeneration)
+        await endBrowserSession();
+    } catch {
+      if (generation === windowGeneration) await endBrowserSession();
+    }
+  });
+  chrome.windows.onCreated.addListener(() => {
+    windowGeneration += 1;
+    sessionClosing = false;
+  });
+}
+chrome.runtime.onStartup?.addListener(async () => {
+  await endBrowserSession();
+  const windows = chrome.windows
+    ? await chrome.windows.getAll({ windowTypes: ["normal", "popup"] })
+    : [{}];
+  sessionClosing = !windows.length;
+});

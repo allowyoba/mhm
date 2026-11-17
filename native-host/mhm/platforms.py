@@ -99,11 +99,13 @@ class WindowsKillJob:
 
 def _linux_child_setup(parent_pid: int) -> None:
     os.setsid()
-    try:
-        libc = ctypes.CDLL(None)
-        PR_SET_PDEATHSIG = 1
-        libc.prctl(PR_SET_PDEATHSIG, signal.SIGKILL)
-        if os.getppid() != parent_pid:
-            os.kill(os.getpid(), signal.SIGKILL)
-    except Exception:
-        pass
+    libc = ctypes.CDLL(None, use_errno=True)
+    PR_SET_PDEATHSIG = 1
+    libc.prctl.argtypes = [ctypes.c_int, *([ctypes.c_ulong] * 4)]
+    libc.prctl.restype = ctypes.c_int
+    if libc.prctl(PR_SET_PDEATHSIG, signal.SIGKILL, 0, 0, 0) != 0:
+        raise OSError(
+            ctypes.get_errno(), "Could not enable core parent-death protection"
+        )
+    if os.getppid() != parent_pid:
+        os.kill(os.getpid(), signal.SIGKILL)
